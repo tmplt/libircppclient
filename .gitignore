@@ -34,3 +34,8 @@ install_manifest.txt
 *.exe
 *.out
 *.app
+
+# Vim
+*.swp
+*.swo
+.*.sw*
