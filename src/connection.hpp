@@ -41,17 +41,22 @@ public:
     void write(const std::string &content);
     void read(const boost::system::error_code &error, std::size_t length);
 
+    void set_read_handler(const read_handler_t &handler)
+    {
+        read_handler_ = handler;
+    }
+
+    void set_write_handler(const write_handler_t &handler)
+    {
+        write_handler_ = handler;
+    }
+
     void run();
     void close();
 
     /* Is the connection still alive? */
     bool alive() const
     {
-        /*
-         * Should io_service::stopped() be returned instead?
-         * Although, we're just checking the connection
-         * itself.
-         */
         return socket_.is_open();
     }
 
