@@ -14,6 +14,17 @@ Design Goals
 * Full compliance with [RFC2813](https://tools.ietf.org/html/rfc2813)
 * Thread-safe and whatever C++ libraries should be
 
+TODO
+----
+- [ ] It compiles!
+- [ ] Add Travis CI
+- [ ] Add basic support
+  - [ ] Connect to the server (and keep the connection alive)
+  - [ ] Join channels
+  - [ ] Send messages
+- [ ] Full RFC2813 compliance
+- [ ] No "holy shit what was he thinking writing this code?"
+
 Non-goals
 ---------
 * Colour decoding/encoding
