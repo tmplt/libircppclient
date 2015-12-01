@@ -23,6 +23,7 @@ TODO
   - [ ] Join channels
   - [ ] Send messages
 - [ ] Full RFC2813 compliance
+- [ ] Extensive documentation and code commenting.
 - [ ] No "holy shit what was he thinking writing this code?"
 
 Non-goals
