@@ -11,7 +11,7 @@ Design Goals
 ------------
 * An easy library to connect to IRC servers and send data back and forth.
 * Small but useful; do one thing and do it well.
-* Full compliance with [RFC2813](https://tools.ietf.org/html/rfc2813).
+* Full compliance with [RFC2813](https://tools.ietf.org/html/rfc2813) (or maybe [IRCv3](http://ircv3.net/) is a better idea?.
 * Thread-safe and whatever C++ libraries should be.
 
 TODO
@@ -22,7 +22,7 @@ TODO
   - [ ] Connect to the server (and keep the connection alive)
   - [ ] Join channels
   - [ ] Send messages
-- [ ] Full RFC2813 compliance
+- [ ] Full RFC2813/IRCv3 compliance
 - [ ] Extensive documentation and code commenting.
 - [ ] No "holy shit what was he thinking writing this code?"
 
