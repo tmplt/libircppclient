@@ -16,7 +16,10 @@ set(Boost_USE_MULTITHREADED  ON)
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
+# For library headers
+include_directories("${PROJECT_SOURCE_DIR}/src")
 
+# Include CMakeLists.txt from src/ and tests/
 add_subdirectory(src)
-#add_subdirectory(tests)
+add_subdirectory(tests)
+
