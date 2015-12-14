@@ -31,17 +31,37 @@ void connection::connect()
     tcp::resolver::query query(addr_, port_);
     tcp::resolver::iterator endpt_it = r.resolve(query);
 
+    /* tcp::resolver::iterator() */
+    decltype(endpt_it) end;
+
+    /* Default error */
+    boost::system::error_code error = boost::asio::error::host_not_found;
+
+    /* Iterate until we've reached the end of generated endpoints. */
+    while (endpt_it != end) {
+        if (!error)
+            break;
+
+        socket_.close();
+        socket_.connect(*endpt_it++, error);
+    }
+
+    if (error)
+        throw error;
+
     /* Copy the first possible endpoint from the generated list. */
-    tcp::endpoint endpoint = *endpt_it;
+    //tcp::endpoint endpoint = *endpt_it;
 
     /*
      * Asynchronously connect to the server via connection::connection_handler.
      * Pass the arguments (this, _1, _2) to the handler.
      */
+    /*
     socket_.async_connect(endpoint,
                           boost::bind(&connection::connection_handler,
                                       this, boost::asio::placeholders::error,
                                       ++endpt_it));
+    */
 }
 
 void connection::connect(const std::string &addr, const std::string &port)

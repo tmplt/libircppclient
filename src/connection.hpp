@@ -44,13 +44,10 @@ public:
         connect();
     }
 
-    /*
-     * Start the initial connection attempt and pass the rest of
-     * the process to connection_handler().
-     */
+    /* Attempt to connect to the server. Throw an error if not able. */
     void connect();
     void connect(const std::string &addr, const std::string &port);
-    void connection_handler(const boost::system::error_code &error, tcp::resolver::iterator endpt_it);
+    //void connection_handler(const boost::system::error_code &error, tcp::resolver::iterator endpt_it);
 
     /*
      * Asynchronously loop this function and push any read data to
@@ -98,6 +95,8 @@ private:
      *
      * It's worth noting that several messages can be caught within buffer.
      * Not all messages sent and received from the server are 512B in length.
+     *
+     * Might change this at a later date, given how IRCv3 seems to work.
      */
     std::array<char, 512> buffer_;
 };
