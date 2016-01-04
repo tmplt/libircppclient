@@ -1,21 +1,3 @@
-/*
- * Copyright (c) 2015 Tmplt <ttemplate223@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 #ifndef CONNECTION_HPP
 #define CONNECTION_HPP
 
@@ -27,10 +9,15 @@ using boost::asio::ip::tcp;
 
 namespace libircppclient {
 
-/* void function_name(const std::string&) */
+/*
+ * Function pointer which will refer to the function that handles
+ * all data received from the server.
+ */
 typedef std::function<void (const std::string&)> read_handler_t;
 
-/* void function_name() */
+/*
+ * Function pointer which will refer to ...
+ */
 typedef std::function<void (void)> write_handler_t;
 
 class connection {
@@ -41,13 +28,12 @@ public:
     connection(const std::string &addr, const std::string &port)
         : addr_(addr), port_(port), socket_(io_service_)
     {
-        connect();
+        //connect();
     }
 
-    /* Attempt to connect to the server. Throw an error if not able. */
+    /* Attempt to connect to the server. Throw an error if unsuccessful. */
     void connect();
     void connect(const std::string &addr, const std::string &port);
-    //void connection_handler(const boost::system::error_code &error, tcp::resolver::iterator endpt_it);
 
     /*
      * Asynchronously loop this function and push any read data to
@@ -56,9 +42,10 @@ public:
     void write(const std::string &content);
     void read(const boost::system::error_code &error, std::size_t length);
 
+    /* TODO explain these */
     void set_read_handler(const read_handler_t &handler)
     {
-        read_handler_ = handler;
+        read_handler_  = handler;
     }
 
     void set_write_handler(const write_handler_t &handler)
@@ -70,10 +57,7 @@ public:
     void close();
 
     /* Is the connection still alive? */
-    bool alive() const
-    {
-        return socket_.is_open();
-    }
+    bool is_alive() const { return socket_.is_open(); }
 
 private:
     /* Server information. */
@@ -101,7 +85,7 @@ private:
     std::array<char, 512> buffer_;
 };
 
-/* namespace libircppclient */
+/* ns libircppclient */
 }
 
 /* #endif CONNECTION_HPP */

@@ -1,21 +1,3 @@
-/*
- * Copyright (c) 2015 Tmplt <ttemplate223@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- */
-
 #include "connection.hpp"
 #include <boost/thread.hpp>
 #include <thread>
@@ -31,13 +13,13 @@ void connection::connect()
     tcp::resolver::query query(addr_, port_);
     tcp::resolver::iterator endpt_it = r.resolve(query);
 
-    /* tcp::resolver::iterator() */
+    /* Denotes the end of the list of generated endpoints. */
     decltype(endpt_it) end;
 
     /* Default error */
     boost::system::error_code error = boost::asio::error::host_not_found;
 
-    /* Iterate until we've reached the end of generated endpoints. */
+    /* Iterate until we've reached the end of the list. */
     while (endpt_it != end) {
         if (!error)
             break;
@@ -48,20 +30,6 @@ void connection::connect()
 
     if (error)
         throw error;
-
-    /* Copy the first possible endpoint from the generated list. */
-    //tcp::endpoint endpoint = *endpt_it;
-
-    /*
-     * Asynchronously connect to the server via connection::connection_handler.
-     * Pass the arguments (this, _1, _2) to the handler.
-     */
-    /*
-    socket_.async_connect(endpoint,
-                          boost::bind(&connection::connection_handler,
-                                      this, boost::asio::placeholders::error,
-                                      ++endpt_it));
-    */
 }
 
 void connection::connect(const std::string &addr, const std::string &port)
@@ -72,45 +40,14 @@ void connection::connect(const std::string &addr, const std::string &port)
     connect();
 }
 
-void connection::connection_handler(const boost::system::error_code &error,
-                                    tcp::resolver::iterator endpt_it)
-{
-    if (!error) {
-        /* Successful connection. */
-
-    } else if (tcp::resolver::iterator() != endpt_it) {
-        /* If we have yet to reach the end of generated endpoints: */
-        socket_.close();
-
-        /* Use next endpoint in list. */
-        tcp::endpoint endpoint = *endpt_it;
-
-        /*
-         * Iterate through this function until we have a valid connection
-         * or until we have run out of possible endpoints.
-         *
-         * This process is asynchronous; other blocks of code will run
-         * during the same time as this.
-         */
-        socket_.async_connect(endpoint,
-                              boost::bind(&connection::connection_handler,
-                                          this, boost::asio::placeholders::error,
-                                          ++endpt_it));
-    } else {
-        /* Unable to connect; we have run out of endpoints. */
-
-        /*
-         * Handle these thrown errors somewhere. Possibly
-         * in libircppclient.cpp?
-         */
-        throw error;
-    }
-}
-
 void connection::run()
 {
     std::thread write_handler_thread(write_handler_);
 
+    /*
+     * Start an asynchronous read thread going through connection::read().
+     * Pass the arguments (this, _1, _2) to the handler.
+     */
     socket_.async_read_some(boost::asio::buffer(buffer_),
                             boost::bind(&connection::read,
                                         this, boost::asio::placeholders::error,
@@ -141,14 +78,10 @@ void connection::read(const boost::system::error_code &error, std::size_t length
         throw error;
     } else {
         /*
-         * Works in synergy with socket::async_read_some.
+         * Works in synergy with socket::async_read_some().
          *
          * Copy the data within the buffer and the length of it
-         * and pass it to the object's read_handler.
-         *
-         * Should this not be placed after the next statement?
-         * Otherwise the first run through this function
-         * will pass useless data to the read_handler.
+         * and pass it to the class' read_handler.
          */
         read_handler_(std::string(buffer_.data(), length));
 
@@ -173,5 +106,5 @@ void connection::close()
     io_service_.stop();
 }
 
-/* namespace end */
+/* ns libircppclient */
 }
