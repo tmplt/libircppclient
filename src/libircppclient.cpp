@@ -34,8 +34,8 @@ client::client(const config &c)
 
 void client::initialize()
 {
-    con.write(std::string("NICK ") + conf_.nick);
-    con.write(std::string("USER ") + conf_.user + " 0 * :" + conf_.user);
+    con.write("NICK " + conf_.nick);
+    con.write("USER " + conf_.user + " 0 * :" + conf_.user);
 }
 
 void client::start()

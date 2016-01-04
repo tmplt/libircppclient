@@ -42,7 +42,8 @@ public:
     void start();
     void stop()
     {
-        /* Haven't I forgotten something?
+        /*
+         * Haven't I forgotten something?
          * Some async function that needs terminating, maybe?
          */
         con.close();

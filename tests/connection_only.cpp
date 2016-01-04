@@ -19,8 +19,6 @@ int main()
         return 1;
     }
 
-    //con.set_write_handler([this]() { this->write_handler(); });
-
     con.connect("localhost", "6667");
     cout << "The connection is... " << (con.is_alive() ? "alive" : "dead") << endl;
 

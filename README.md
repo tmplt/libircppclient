@@ -30,4 +30,4 @@ Non-goals
 Dependencies
 ------------
 * Boost.asio (tested with 1.60.0)
-* C++11
+* A compiler with C++14 support, such as Clang or GCC
