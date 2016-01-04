@@ -8,7 +8,7 @@ An easy-to-use IRC-client interface based on Boost.asio to send and receive data
 Design Goals
 ------------
 * An easy-to-use library to connect to IRC servers and send data back and forth.
-* Full compliance with [RFC2813](https://tools.ietf.org/html/rfc2813) (or maybe [IRCv3](http://ircv3.net/) is a better idea?).
+* Full compliance with [RFC1459](https://tools.ietf.org/html/rfc1459) and by extension [IRCv3](http://ircv3.net/).
 * Thread-safe and whatever C++ libraries should be.
 
 TODO
