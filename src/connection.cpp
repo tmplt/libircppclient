@@ -1,6 +1,7 @@
 #include "connection.hpp"
 #include <boost/thread.hpp>
 #include <thread>
+#include <chrono>
 
 using boost::asio::ip::tcp;
 
@@ -8,7 +9,11 @@ namespace libircppclient {
 
 void connection::connect()
 {
-    /* Resolve the host and generate a list of endpoints. */
+    /*
+     * Resolve the host and generate a list of endpoints.
+     * An endpoint is the data required to connect to and address.
+     * An address may have more than one endpoint.
+     */
     tcp::resolver r(io_service_);
     tcp::resolver::query query(addr_, port_);
     tcp::resolver::iterator endpt_it = r.resolve(query);
@@ -34,6 +39,7 @@ void connection::connect()
 
 void connection::connect(const std::string &addr, const std::string &port)
 {
+    /* Perfect place to implement check of valid data */
     addr_ = addr;
     port_ = port;
 
@@ -42,7 +48,8 @@ void connection::connect(const std::string &addr, const std::string &port)
 
 void connection::run()
 {
-    std::thread write_handler_thread(write_handler_);
+    //std::thread write_handler_thread(write_handler_);
+    std::thread ping_handler_thread(ping_handler);
 
     /*
      * Start an asynchronous read thread going through connection::read().
@@ -55,11 +62,22 @@ void connection::run()
 
     io_service_.run();
 
-    /*
-     * Blocks the continuation of the function until
-     * write_handler_thread is done.
-     */
-    write_handler_thread.join();
+    /* Remain at this point until we do not need the connection any more. */
+    //write_handler_thread.join();
+    ping_handler_thread.join();
+}
+
+void connection::ping()
+{
+    using namespace std::literals;
+
+    while (do_ping) {
+        /* Arbitrary interval decided by mimicing WeeChat. */
+        std::this_thread::sleep_for(1min + 30s);
+
+        std::cout << "[info] Pinging " << addr_ << '.' << std::endl;
+        write("PING " + addr_);
+    }
 }
 
 void connection::write(const std::string &content)
@@ -100,7 +118,7 @@ void connection::read(const boost::system::error_code &error, std::size_t length
     }
 }
 
-void connection::close()
+void connection::stop()
 {
     socket_.close();
     io_service_.stop();

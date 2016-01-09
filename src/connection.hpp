@@ -10,54 +10,76 @@ using boost::asio::ip::tcp;
 namespace libircppclient {
 
 /*
- * Function pointer which will refer to the function that handles
- * all data received from the server.
+ * Type which refer to a function that handles
+ * specific data received from the server.
  */
 typedef std::function<void (const std::string&)> read_handler_t;
 
-/*
- * Function pointer which will refer to ...
- */
-typedef std::function<void (void)> write_handler_t;
+typedef std::function<void (void)> ping_t;
 
 class connection {
 public:
-    /* Bind used socket to the io_service */
+    /* Bind used socket to the io_service. */
     connection() : socket_(io_service_) { }
 
-    connection(const std::string &addr, const std::string &port)
-        : addr_(addr), port_(port), socket_(io_service_)
-    {
-        //connect();
-    }
-
-    /* Attempt to connect to the server. Throw an error if unsuccessful. */
-    void connect();
+    /*
+     * Check if given data is valid, then attempt to connect to the
+     * server. Throw an error if unsuccessful.
+     */
     void connect(const std::string &addr, const std::string &port);
+
+    /*
+     * While not directly the connection itself, these functions refer to
+     * the io_service and the loop itself.
+     */
+    void run();
+    void stop();
 
     /*
      * Asynchronously loop this function and push any read data to
      * the object's read_handler.
      */
-    void write(const std::string &content);
     void read(const boost::system::error_code &error, std::size_t length);
+    void write(const std::string &content);
 
-    /* TODO explain these */
+    /*
+     * Binds the read handler to a function not necessarily in the
+     * current class.
+     */
     void set_read_handler(const read_handler_t &handler)
     {
         read_handler_  = handler;
     }
 
-    void set_write_handler(const write_handler_t &handler)
+    //void set_write_handler(const write_handler_t &handler)
+    //{
+    //    write_handler_ = handler;
+    //}
+
+    /*
+     * So that we do not get kicked from the server, and so that the
+     * server itself does not have to ping us, which seems preferable
+     * in the specification.
+     *
+     * In a perfect implementation, this should only be used when no
+     * data has been sent to the server for a specified amount of time.
+     * Currently it will ping disregarding if a message to the server has
+     * been sent or not within the time-frame. Should we implement a
+     * control variable for this?
+     */
+    void ping();
+
+    /* For a graceful shutdown. */
+    void stop_ping()
     {
-        write_handler_ = handler;
+        do_ping = false;
     }
 
-    void run();
-    void close();
-
     /* Is the connection still alive? */
-    bool is_alive() const { return socket_.is_open(); }
+    bool is_alive() const
+    {
+        return socket_.is_open();
+    }
 
 private:
     /* Server information. */
@@ -69,7 +91,16 @@ private:
     boost::asio::ip::tcp::socket socket_;
 
     read_handler_t  read_handler_;
-    write_handler_t write_handler_;
+
+    ping_t ping_handler = std::bind(&connection::ping, this);
+    bool   do_ping = true;
+
+    /*
+     * As the over-loaded function assigns addr and port,
+     * and then calls base connect(), this is private
+     * member function.
+     */
+    void connect();
 
     /*
      * 512B is the max message length within the IRC protocol.
