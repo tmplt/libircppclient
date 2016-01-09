@@ -12,6 +12,7 @@ before_install:
 install:
   - sudo apt-get remove -qq cmake # remove the museum edition (github.com/SFTtech/openage)
   - sudo apt-get install -qq cmake clang libboost-all-dev
+  - sudo apt-get install apt-show-versions
 
 before_script:
   - clang --version
@@ -26,12 +27,13 @@ script:
 
 notifications:
   irc:
-    - "chat.freenode.net#libircppclient"
-  template:
-    - "%{repository} (%{commit} - %{author}): %{message}"
-    - "took %{duration}, moar info: %{build_url}"
-  use_notice: true
-  skip_join: true
+    channels:
+      - "chat.freenode.net#libircppclient"
+    template:
+      - "%{repository} (%{commit} - %{author}): %{message}"
+      - "took %{duration}, moar info: %{build_url}"
+    use_notice: true
+    skip_join: true
 
 cache:
   directories:
