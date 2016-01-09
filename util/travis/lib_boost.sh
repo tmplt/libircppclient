@@ -8,7 +8,7 @@ tar xjf boost_1_60_0.tar.bz2
 cd ./boost_1_60_0
 
 # Build the bjam binary
-./bootstrap.sh --exec-prefix=/usr/local --with-library=system
+./bootstrap.sh --exec-prefix=/usr/local --with-libraries=system
 
 # Execute it
 ./bjam
