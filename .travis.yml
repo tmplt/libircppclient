@@ -6,10 +6,20 @@ compiler:
 
 before_install:
   - uname -a
-  - sudo apt-add-repository --yes ppa:sfttech/random # cmake
+  - sudo apt-add-repository --yes ppa:sfttech/random        # cmake
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test     # C++14 toolchain
   - sudo apt-get update -qq
 
 install:
+  # Update Ubuntu's outdated toolchains.
+  - export CVERSION="4.9"
+  - sudo apt-get install -qq g++-${CVERSION}
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-${CVERSION}" CC="gcc-${CVERSION}"; fi
+  - export CC=`which $CC`
+  - export CXX=`which $CXX`
+  # and Clang
+  - sudo apt-get install clang-3.5
+
   - sudo apt-get remove -qq cmake # remove the museum edition (github.com/SFTtech/openage)
   - sudo apt-get install -qq cmake clang libboost-all-dev
   - sudo apt-get install apt-show-versions
