@@ -1,7 +1,7 @@
 language: cpp
 
 compiler:
-  - gcc
+  #- gcc
   - clang
 
 before_install:
@@ -29,6 +29,7 @@ install:
 
   # Get the latest version of Boost, and compile it
   - sudo apt-get install build-essential
+  - chmod +x ./util/travis/lib_boost.sh
   - ./util/travis/lib_boost.sh
 
   - sudo apt-get remove -qq cmake # remove the museum edition (github.com/SFTtech/openage)
