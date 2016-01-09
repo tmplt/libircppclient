@@ -5,29 +5,45 @@ compiler:
   - clang
 
 before_install:
-  - uname -a
-  - sudo apt-add-repository --yes ppa:sfttech/random              # cmake
-  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test     # C++14 toolchain
+  - uname -a                                                  # Ubuntu Precise
+  - sudo add-apt-repository --yes ppa:sfttech/random          # CMake
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # GCC toolchain with C++14 support, also needed for the llvm deb.
+  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
+  - sudo add-apt-repository --yes 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' # Clang toolchain with C++14 support.
   - sudo apt-get update -qq
 
 install:
   # Update Ubuntu's outdated toolchains.
   - export CVERSION="4.9"
+  - export CLANG_VERSION="3.8"
+
+  # GNU
   - sudo apt-get install -qq g++-${CVERSION}
   - if [ "$CXX" = "g++" ]; then export CXX="g++-${CVERSION}" CC="gcc-${CVERSION}"; fi
   - export CC=`which $CC`
   - export CXX=`which $CXX`
-  # and Clang
-  - sudo apt-get install clang-3.5
 
-  - sudo apt-get remove -qq cmake # remove the museum edition (github.com/SFTtech/openage)
-  - sudo apt-get install -qq cmake clang libboost-all-dev
+  # and Clang
+  - sudo apt-get install clang-${CLANG_VERSION}
+  - export CC=`which clang-${CLANG_VERSION}`
+  - export CXX=`which clang++-${CLANG_VERSION}`
+
+  # Get the latest version of Boost, and compile it
+  - sudo apt-get install build-essential
+  - mkdir -p libs/boost && cd libs/boost
+  - wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2" -O boost.tar.bz2
+  - tar xjf boost.tar.bz2
+  - cd ./boost*
+  - ./bootstrap.sh --exec-prefix=/usr/local --with-libraries=system
+  - ./b2 && sudo ./b2 install
+
+  - sudo apt-get remove -qq cmake            # remove the museum edition (according to github.com/SFTtech/openage)
+  - sudo apt-get install -qq cmake clang
   - sudo apt-get install apt-show-versions
 
 before_script:
   - clang --version
   - gcc --version
-  - apt-show-versions libboost-all-dev # Boost version
   - cmake --version
 
 script:
@@ -45,8 +61,3 @@ notifications:
       - "took %{duration}, moar info: %{build_url}"
     use_notice: true
     skip_join: true
-
-cache:
-  directories:
-    - .cicache
-  apt: true
