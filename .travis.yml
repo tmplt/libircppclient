@@ -1,7 +1,7 @@
 language: cpp
 
 compiler:
-  #- gcc
+  - gcc
   - clang
 
 before_install:
@@ -30,7 +30,6 @@ install:
 
   # Get the latest version of Boost, and compile it
   - sudo apt-get install build-essential
-  - chmod +x ./util/travis/lib_boost.sh
   - mkdir -p libs/boost && cd libs/boost
   - wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2" -O boost.tar.bz2
   - tar xjf boost.tar.bz2
