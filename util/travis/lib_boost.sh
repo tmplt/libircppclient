@@ -14,4 +14,4 @@ echo "Executing bootstrap.sh"
 # Execute it
 echo "Installing Boost"
 ./b2
-sudo /.b2 install
+sudo ./b2 install
