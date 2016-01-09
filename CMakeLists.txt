@@ -13,12 +13,12 @@ endif()
 
 message(STATUS "*** Generating recipe for version ${VERSION_STRING} ***")
 
-enable_testing()
-add_definitions(-std=c++14 -Weverything
-                           -Wno-c++98-compat
-                           -Wno-c++98-compat-pedantic
-                           -Wno-padded
-                           -Wno-unused-parameter)
+#enable_testing()
+#add_definitions(-std=c++14 -Weverything
+#                           -Wno-c++98-compat
+#                           -Wno-c++98-compat-pedantic
+#                           -Wno-padded
+#                           -Wno-unused-parameter)
 
 # For pthreads
 set(THREADS_PREFER_PTHEAD_FLAG ON)
