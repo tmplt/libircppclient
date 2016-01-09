@@ -12,6 +12,8 @@ if (DEVELOPMENT_BUILD)
 endif()
 
 add_definitions(-std=c++14)
+
+# Linux Clang + AppleClang
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     add_definitions(-Weverything -Wno-c++98-compat
@@ -34,9 +36,9 @@ find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 
 message("
-         ----------------------
+         -----------------------
          ${PROJECT_NAME} v${PROJECT_VERSION}
-         ----------------------
+         -----------------------
 
          Compiler  | ${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}
          Libraries | Boost-${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}
