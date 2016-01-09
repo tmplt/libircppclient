@@ -7,18 +7,33 @@ set(DEVELOPMENT_BUILD TRUE)
 set(VERSION_STRING "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.\
 ${PROJECT_VERSION_PATCH}.${PROJECT_VERSION_TWEAK}")
 
-if(DEVELOPMENT_BUILD)
+if (DEVELOPMENT_BUILD)
     set(VERSION_STRING "${VERSION_STRING}-dev")
 endif()
 
-message(STATUS "*** Generating recipe for version ${VERSION_STRING} ***")
+message("
+         ----------------------
+         ${PROJECT_NAME} ${PROJECT_VERSION}
+         ----------------------
+
+         compiler  | ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}
+         cxxflags  | ${CMAKE_CXX_FLAGS}
+         build dir | ${CMAKE_BINARY_DIR}
+")
 
 #enable_testing()
-add_definitions(-std=c++14 -Weverything
-                           -Wno-c++98-compat
-                           -Wno-c++98-compat-pedantic
-                           -Wno-padded
-                           -Wno-unused-parameter)
+
+add_definitions(-std=c++14)
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+
+    add_definitions(-Weverything -Wno-c++98-compat
+                                 -Wno-c++98-compat-pedantic
+                                 -Wno-padded
+                                 -Wno-unused-parameter)
+
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    add_definitions(-Wall)
+endif()
 
 # For pthreads
 set(THREADS_PREFER_PTHEAD_FLAG ON)
