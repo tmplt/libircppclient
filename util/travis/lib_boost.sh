@@ -3,7 +3,7 @@
 # It's your fault I'm doing this Travis
 
 mkdir lib_boost && cd lib_boost
-wget "http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.bz2/download"
+wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2"
 tar xjf boost_1_60_0.tar.bz2
 cd ./boost_1_60_0
 
