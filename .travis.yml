@@ -20,7 +20,16 @@ install:
   - export BOOST_VERSION="1_60_0"
 
   # Install and export updated toolchains.
-  - ./util/travis/compilers.sh
+  ## GNU
+  - sudo apt-get install -qq g++-${CVERSION}
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-${CVERSION}" CC="gcc-${CVERSION}"; fi
+  - export  CC=`which $CC`
+  - export CXX=`which $CXX`
+
+  ## Clang
+  - sudo apt-get install clang-${CLANG_VERSION}
+  - export  CC=`which clang-${CLANG_VERSION}`
+  - export CXX=`which clang++-${CLANG_VERSION}`
 
   # Get the latest version of Boost, and compile it
   - ./util/travis/install_boost.sh
