@@ -6,8 +6,8 @@ compiler:
 
 before_install:
   - uname -a
-  - sudo apt-add-repository --yes ppa:sfttech/random        # cmake
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test     # C++14 toolchain
+  - sudo apt-add-repository --yes ppa:sfttech/random              # cmake
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test     # C++14 toolchain
   - sudo apt-get update -qq
 
 install:
