@@ -11,18 +11,6 @@ if (DEVELOPMENT_BUILD)
     set(VERSION_STRING "${VERSION_STRING}-dev")
 endif()
 
-message("
-         ----------------------
-         ${PROJECT_NAME} ${PROJECT_VERSION}
-         ----------------------
-
-         compiler  | ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}
-         cxxflags  | ${CMAKE_CXX_FLAGS}
-         build dir | ${CMAKE_BINARY_DIR}
-")
-
-#enable_testing()
-
 add_definitions(-std=c++14)
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
@@ -35,18 +23,26 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     add_definitions(-Wall)
 endif()
 
-# For pthreads
+# For pthreads.
 set(THREADS_PREFER_PTHEAD_FLAG ON)
 
-# For Boost
+# For Boost.
 set(Boost_USE_STATIC_LIBS    OFF)
 set(Boost_USE_MULTITHREADED  ON)
 
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 
-# For library headers
-include_directories("${PROJECT_SOURCE_DIR}/src")
+message("
+         ----------------------
+         ${PROJECT_NAME} v${PROJECT_VERSION}
+         ----------------------
+
+         Compiler  | ${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}
+         Libraries | Boost-${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}
+         C++ flags | ${CMAKE_CXX_FLAGS}
+         Build dir | ${CMAKE_BINARY_DIR}
+")
 
 # Include CMakeLists.txt from src/ and tests/
 add_subdirectory(src)
