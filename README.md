@@ -1,5 +1,6 @@
 [![Github Lience](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Tmplt/libircppclient/master/LICENSE)
 [![Github Issues](https://img.shields.io/badge/lib-issues-brightgreen.svg)](https://github.com/Tmplt/libircppclient/issues)
+[![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
 
 libircppclient
 ==============
@@ -14,12 +15,23 @@ Design Goals
 TODO
 ----
 - [X] It compiles!
-- [ ] Add Travis CI building
+- [ ] It compiles on multiple platforms!
+- [ ] Add (a working) Travis CI schematic
+
+- [ ] Initial code structure complete
+  - [X] Basic control flow
+  - [ ] FIFO object for server/client messages
+  - [ ] Error handling
+
 - [ ] Add basic support
   - [X] Connect to the server (and keep the connection alive)
-  - [ ] Join channels
-  - [ ] Send messages
-- [ ] Full RFC2813/IRCv3 compliance
+  - [ ] IRC commands
+    - [ ] Join channels
+    - [ ] Send messages
+
+- [ ] Full RFC1459 support
+- [ ] IRCv3 compliance
+
 - [ ] Extensive documentation and code commenting.
 - [ ] No "holy shit what was he thinking writing this code?"
 
@@ -29,5 +41,6 @@ Non-goals
 
 Dependencies
 ------------
-* Boost.asio (tested with 1.60.0)
+* CMake 3.0
+* Boost.asio (tested with >=1.59.0)
 * A compiler with C++14 support, such as Clang or GCC
