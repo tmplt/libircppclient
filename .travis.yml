@@ -17,27 +17,22 @@ install:
   - export CVERSION="4.9"
   - export CLANG_VERSION="3.8"
   - export PROJECT_DIR=`pwd`
+  - export BOOST_VERSION="1_60_0"
 
-  # GNU
+  # Install and export updated toolchains.
+  ## GNU
   - sudo apt-get install -qq g++-${CVERSION}
   - if [ "$CXX" = "g++" ]; then export CXX="g++-${CVERSION}" CC="gcc-${CVERSION}"; fi
-  - export CC=`which $CC`
+  - export  CC=`which $CC`
   - export CXX=`which $CXX`
 
-  # and Clang
+  ## Clang
   - sudo apt-get install clang-${CLANG_VERSION}
-  - export CC=`which clang-${CLANG_VERSION}`
+  - export  CC=`which clang-${CLANG_VERSION}`
   - export CXX=`which clang++-${CLANG_VERSION}`
 
   # Get the latest version of Boost, and compile it
-  - sudo apt-get install build-essential
-  - mkdir -p libs/boost && cd libs/boost
-  - wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.tar.bz2" -O boost.tar.bz2
-  - tar xjf boost.tar.bz2
-  - cd ./boost*
-  - ./bootstrap.sh --exec-prefix=/usr/local --with-libraries=system
-  - ./b2 && sudo ./b2 install > /dev/null
-  - cd $PROJECT_DIR
+  - ./util/travis/install_boost.sh
 
   - sudo apt-get remove -qq cmake            # remove the museum edition (according to github.com/SFTtech/openage)
   - sudo apt-get install -qq cmake clang
@@ -45,7 +40,7 @@ install:
 
 before_script:
   - clang --version
-  - gcc --version
+  - gcc   --version
   - cmake --version
 
 script:
