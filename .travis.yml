@@ -8,7 +8,7 @@ before_install:
   - uname -a                                                  # Ubuntu Precise
   - sudo add-apt-repository --yes ppa:sfttech/random          # CMake
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # GCC toolchain with C++14 support, also needed for the llvm deb.
-  - sudo add-apt-repotitory --yes 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' # Clang toolchain with C++14 support.
+  - sudo add-apt-repository --yes 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' # Clang toolchain with C++14 support.
   - sudo apt-get update -qq
 
 install:
