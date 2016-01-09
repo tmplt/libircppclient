@@ -11,7 +11,15 @@ if(DEVELOPMENT_BUILD)
     set(VERSION_STRING "${VERSION_STRING}-dev")
 endif()
 
-message(STATUS "*** Generating recipe for version ${VERSION_STRING} ***")
+message("
+         ----------------------
+         ${PROJECT_NAME} ${PROJECT_VERSION}
+         ----------------------
+
+         compiler  | ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}
+         cxxflags  | ${CMAKE_CXX_FLAGS}
+         build dir | ${CMAKE_BINARY_DIR}
+")
 
 #enable_testing()
 add_definitions(-std=c++14 -Weverything

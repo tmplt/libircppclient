@@ -15,7 +15,7 @@ before_install:
 install:
     # Update Ubuntu's outdated toolchains.
   - export CVERSION="4.9"
-  - export CLANG_VERSION="3.7"
+  - export CLANG_VERSION="3.8"
 
   - sudo apt-get install -qq g++-${CVERSION}
   - if [ "$CXX" = "g++" ]; then export CXX="g++-${CVERSION}" CC="gcc-${CVERSION}"; fi
@@ -23,8 +23,9 @@ install:
   - export CXX=`which $CXX`
 
   # and Clang
-  #- sudo apt-get install clang-${CLANG_VERSION}
-  - sudo apt-get install clang-3.8
+  - sudo apt-get install clang-${CLANG_VERSION}
+  - export CC=`which clang-${CLANG_VERSION}`
+  - export CXX=`which clang++-${CLANG_VERSION}`
 
   - sudo apt-get remove -qq cmake # remove the museum edition (github.com/SFTtech/openage)
   - sudo apt-get install -qq cmake clang libboost-all-dev
