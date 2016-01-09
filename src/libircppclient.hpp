@@ -6,6 +6,10 @@
 
 namespace libircppclient {
 
+/*
+ * It really feels like this isn't the quick-n-simple implementation
+ * we're looking for.
+ */
 struct config {
     /* Default values. */
     std::string
@@ -33,7 +37,7 @@ public:
     void quit(const std::string &message);
 
     /*
-     * As this lib is not feature done, yet:
+     * As this lib is not feature-done, yet:
      * Send the given content directly to the server
      * as a command.
      */
@@ -46,22 +50,23 @@ public:
          * Haven't I forgotten something?
          * Some async function that needs terminating, maybe?
          */
-        con.close();
+        con.stop_ping();
+        con.stop();
     }
 
-    void add_read_handler(std::function<void (const std::string&)> func);
+    /* Add a read_handler that may not exist in this class. */
+    void add_read_handler(read_handler_t func);
 
 protected:
     config conf_;
-
-    void write_handler();
-    void read_handler(const std::string &content);
 
     /*
      * Filled with lambdas at run-time which will decide how
      * to handle certain messages from the server.
      */
-    std::vector<std::function<void (const std::string&)>> read_handlers_;
+    void read_handler(const std::string &content);
+
+    std::vector<read_handler_t> read_handlers_;
 
     connection con;
 
