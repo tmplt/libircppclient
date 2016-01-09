@@ -16,6 +16,7 @@ install:
   # Update Ubuntu's outdated toolchains.
   - export CVERSION="4.9"
   - export CLANG_VERSION="3.8"
+  - export PROJECT_DIR=`pwd`
 
   # GNU
   - sudo apt-get install -qq g++-${CVERSION}
@@ -35,7 +36,8 @@ install:
   - tar xjf boost.tar.bz2
   - cd ./boost*
   - ./bootstrap.sh --exec-prefix=/usr/local --with-libraries=system
-  - ./b2 && sudo ./b2 install
+  - ./b2 && sudo ./b2 install > /dev/null
+  - cd $PROJECT_DIR
 
   - sudo apt-get remove -qq cmake            # remove the museum edition (according to github.com/SFTtech/openage)
   - sudo apt-get install -qq cmake clang
