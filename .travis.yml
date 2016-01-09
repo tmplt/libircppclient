@@ -23,7 +23,8 @@ before_script:
 script:
   - mkdir -p travisbuild
   - cd travisbuild
-  - cmake .. && make
+  - cmake ..
+  - make
 
 notifications:
   irc:
