@@ -1,7 +1,6 @@
 [![Github Lience](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Tmplt/libircppclient/master/LICENSE)
 [![Github Issues](https://img.shields.io/badge/lib-issues-brightgreen.svg)](https://github.com/Tmplt/libircppclient/issues)
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
-[![Coverage Status](https://coveralls.io/repos/Tmplt/libircppclient/badge.svg?branch=master&service=github)](https://coveralls.io/github/Tmplt/libircppclient?branch=master)
 
 libircppclient
 ==============
