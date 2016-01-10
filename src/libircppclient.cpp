@@ -61,10 +61,6 @@ void client::start()
      * quite useless, however, the protocol specifies that it is better
      * that the client PINGs, rather than the server.
      *
-     * So... here's a though: rename this to "connection/ping/loop_handler"
-     * and make it send a PING to the server every 60 seconds. Sleep with
-     * chrono or something.
-     *
      * Then, course, present the fifo object/streams to the top level.
      */
 
