@@ -36,9 +36,9 @@ find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 
 message("
-         -----------------------
-         ${PROJECT_NAME} v${PROJECT_VERSION}
-         -----------------------
+         ---------------------------
+         ${PROJECT_NAME} v${VERSION_STRING}
+         ---------------------------
 
          Compiler  | ${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}
          Libraries | Boost-${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}
