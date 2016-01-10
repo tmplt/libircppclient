@@ -17,7 +17,7 @@ install:
   - export CVERSION="4.9"
   - export CLANG_VERSION="3.8"
   - export PROJECT_DIR=`pwd`
-  - export BOOST_VERSION="1_60_0"
+  - export BOOST_VERSION="1.60.0"
 
   # Install and export updated toolchains.
   ## GNU

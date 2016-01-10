@@ -6,11 +6,11 @@ mkdir -p libs/boost && cd libs/boost
 echo "
 
          ------------------------
-         Downloading Boost-$(echo $BOOST_VERSION | sed 's/_/\./g')
+         Downloading Boost-$BOOST_VERSION
          ------------------------
 
 "
-wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_$BOOST_VERSION.tar.bz2" -O boost.tar.bz2
+wget "http://downloads.sourceforge.net/project/boost/boost/1.60.0/boost_$(echo $BOOST_VERSION | sed 's/\./_/g').tar.bz2" -O boost.tar.bz2
 tar xjf boost.tar.bz2
 cd ./boost*
 
