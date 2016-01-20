@@ -34,6 +34,9 @@ TODO
 - [ ] Extensive documentation and code commenting.
 - [ ] No "holy shit what was he thinking writing this code?"
 
+- [ ] Go a bit more in-depth on what's going on [here](https://gitlab.com/Tmplt/libircppclient/blob/master/src/libircppclient.cpp#L16)
+- [ ] Make the TODO list consistent
+
 Dependencies
 ------------
 * CMake 3.0
