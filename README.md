@@ -34,12 +34,12 @@ TODO
 - [ ] Extensive documentation and code commenting.
 - [ ] No "holy shit what was he thinking writing this code?"
 
-Non-goals
----------
-* Colour decoding/encoding
-
 Dependencies
 ------------
 * CMake 3.0
 * Boost.asio (tested with >=1.59.0)
 * A compiler with C++14 support, such as Clang or GCC
+
+Thank you:
+----------
+- [@muriloadriano](https://github.com/muriloadriano) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot) -- A great inspiration for many parts of this library!
