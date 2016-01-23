@@ -51,15 +51,3 @@ script:
 
 notifications:
   email: false
-
-  irc:
-    - "chat.freenode.net#libircppclient"
-
-    on_success: always
-    on_failure: always
-
-    template:
-      - "%{repository} (%{commit} - %{author}): %{message}"
-      - "took %{duration}, moar info: %{build_url}"
-    use_notice: true
-    skip_join: true
