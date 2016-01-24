@@ -13,7 +13,7 @@ namespace libircppclient {
  * Type which refer to a function that handles
  * specific data received from the server.
  */
-typedef std::function<void (const std::string&)> read_handler_t;
+typedef std::function<void (const std::string &content)> read_handler_t;
 
 /* Only used to keep the connection alive. */
 typedef std::function<void (void)> ping_t;
