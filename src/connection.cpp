@@ -11,7 +11,7 @@ void connection::connect()
 {
     /*
      * Resolve the host and generate a list of endpoints.
-     * An endpoint is the data required to connect to and address.
+     * An endpoint is the information used to connect to an address.
      * An address may have more than one endpoint.
      */
     tcp::resolver r(io_service_);
@@ -63,7 +63,6 @@ void connection::run()
     io_service_.run();
 
     /* Remain at this point until we do not need the connection any more. */
-    //write_handler_thread.join();
     ping_handler_thread.join();
 }
 

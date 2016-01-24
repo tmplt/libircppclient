@@ -15,6 +15,7 @@ namespace libircppclient {
  */
 typedef std::function<void (const std::string&)> read_handler_t;
 
+/* Only used to keep the connection alive. */
 typedef std::function<void (void)> ping_t;
 
 class connection {
@@ -50,11 +51,6 @@ public:
     {
         read_handler_  = handler;
     }
-
-    //void set_write_handler(const write_handler_t &handler)
-    //{
-    //    write_handler_ = handler;
-    //}
 
     /*
      * So that we do not get kicked from the server, and so that the
@@ -92,12 +88,13 @@ private:
 
     read_handler_t  read_handler_;
 
+    /* Keeping the connection alive. */
     ping_t ping_handler = std::bind(&connection::ping, this);
     bool   do_ping = true;
 
     /*
      * As the over-loaded function assigns addr and port,
-     * and then calls base connect(), this is private
+     * and then calls base connect(), this is a private
      * member function.
      */
     void connect();

@@ -4,6 +4,8 @@ compiler:
   - gcc
   - clang
 
+# Currently, clang is updated on both builds, which shouldn't be the case.
+# Fix this so that it only updates when clang is going to be used.
 before_install:
   - uname -a                                                  # Ubuntu Precise
   - sudo add-apt-repository --yes ppa:sfttech/random          # CMake
