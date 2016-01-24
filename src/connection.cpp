@@ -7,6 +7,15 @@ using boost::asio::ip::tcp;
 
 namespace libircppclient {
 
+void connection::connect(const std::string &addr, const std::string &port)
+{
+    /* Perfect place to implement check of valid data */
+    addr_ = addr;
+    port_ = port;
+
+    connect();
+}
+
 void connection::connect()
 {
     /*
@@ -35,15 +44,6 @@ void connection::connect()
 
     if (error)
         throw error;
-}
-
-void connection::connect(const std::string &addr, const std::string &port)
-{
-    /* Perfect place to implement check of valid data */
-    addr_ = addr;
-    port_ = port;
-
-    connect();
 }
 
 void connection::run()
