@@ -16,7 +16,7 @@ struct config {
     address = "",
     port    = "6667",
     nick    = "Temeraire",
-    user    = nick,
+    user    = "Laurence",
 
     /* Optional */
 
