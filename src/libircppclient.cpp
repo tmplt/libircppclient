@@ -80,7 +80,7 @@ void client::read_handler(const std::string &content)
      * Iterate through all read handlers which may
      * send a reply back to the server.
      */
-    for (auto func: read_handlers_) {
+    for (read_handler_t &func: read_handlers_) {
         func(content);
     }
 }
