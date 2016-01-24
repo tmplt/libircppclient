@@ -78,6 +78,11 @@ void connection::ping()
     }
 }
 
+void connection::pong()
+{
+    write("PONG :" + addr_);
+}
+
 void connection::write(const std::string &content)
 {
     /*
@@ -85,6 +90,7 @@ void connection::write(const std::string &content)
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
     boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
+    //reset_timer();
 }
 
 void connection::read(const boost::system::error_code &error, std::size_t length)
@@ -99,7 +105,7 @@ void connection::read(const boost::system::error_code &error, std::size_t length
          * Copy the data within the buffer and the length of it
          * and pass it to the class' read_handler.
          */
-        read_handler_(std::string(buffer_.data(), length));
+        read_handler(std::string(buffer_.data(), length));
 
         /*
          * Start an asynchronous recursive read thread.
@@ -114,6 +120,19 @@ void connection::read(const boost::system::error_code &error, std::size_t length
                                             this, boost::asio::placeholders::error,
                                             boost::asio::placeholders::bytes_transferred));
     }
+}
+
+void connection::read_handler(const std::string &content)
+{
+    std::stringstream iss(content);
+    std::string command;
+
+    iss >> command;
+
+    if (command == "PING")
+        pong();
+    else
+        ext_read_handler_(content);
 }
 
 void connection::stop()

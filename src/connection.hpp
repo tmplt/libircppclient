@@ -38,18 +38,24 @@ public:
 
     /*
      * Asynchronously loop this function and push any read data to
-     * the object's read_handler.
+     * read_handler().
      */
     void read(const boost::system::error_code &error, std::size_t length);
+
+    /* Only handles connection-specific requests, e.g., PING */
+    void read_handler(const std::string &content);
+
+    /* But write synchronously. */
     void write(const std::string &content);
 
     /*
-     * Binds the read handler to a function not necessarily in the
-     * current class.
+     * Binds the external read handler, which handles everything
+     * this class' read_handler() do not. Bound function may
+     * exist in any class.
      */
-    void set_read_handler(const read_handler_t &handler)
+    void set_ext_read_handler(const read_handler_t &handler)
     {
-        read_handler_  = handler;
+        ext_read_handler_  = handler;
     }
 
     /*
@@ -61,9 +67,15 @@ public:
      * data has been sent to the server for a specified amount of time.
      * Currently it will ping disregarding if a message to the server has
      * been sent or not within the time-frame. Should we implement a
-     * control variable for this?
+     * timer for this?
      */
     void ping();
+
+    /* TODO: implement */
+    void reset_timer();
+
+    /* Fail-safe for ping() */
+    void pong();
 
     /* For a graceful shutdown. */
     void stop_ping()
@@ -86,7 +98,11 @@ private:
     boost::asio::io_service io_service_;
     boost::asio::ip::tcp::socket socket_;
 
-    read_handler_t  read_handler_;
+    /*
+     * All received data that passed this class'
+     * read_handler() goes through this object.
+     */
+    read_handler_t ext_read_handler_;
 
     /* Keeping the connection alive. */
     ping_t ping_handler = std::bind(&connection::ping, this);

@@ -1,6 +1,6 @@
 # Enables some functionality
 cmake_minimum_required(VERSION 3.0)
-project(libircppclient VERSION 0.1.2.0)
+project(libircppclient VERSION 0.1.3.0)
 
 set(DEVELOPMENT_BUILD TRUE)
 
