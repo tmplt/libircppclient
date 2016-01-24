@@ -1,5 +1,5 @@
--> [![Github Lience](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Tmplt/libircppclient/master/LICENSE)
-[![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient) <-
+[![Github Lience](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Tmplt/libircppclient/master/LICENSE)
+[![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
 
 
 libircppclient
