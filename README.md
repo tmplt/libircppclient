@@ -1,9 +1,8 @@
+libircppclient
+==============
 [![Github Lience](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Tmplt/libircppclient/master/LICENSE)
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
 
-
-libircppclient
-==============
 An easy-to-use IRC-client interface based on Boost.asio to send and receive data from IRC servers.
 
 Design Goals
