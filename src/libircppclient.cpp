@@ -2,6 +2,15 @@
 #include <iostream>
 #include <thread>
 
+/*
+ * FIFO:
+ * https://stackoverflow.com/questions/1262808/which-stl-container-should-i-use-for-a-fifo
+ *
+ * std::queue for the interface. Unsure about the container, but chunk allocating would
+ * seem to be better, which will expand only if the server/client sends messages faster than
+ * the lib can process them. This is already standard for std::queue, though.
+ */
+
 namespace libircppclient {
 
 client::client(const config &c)
@@ -54,24 +63,6 @@ void client::start()
     con.connect(conf_.address, conf_.port);
     initialize();
     con.run();
-
-    /*
-     * We can create two fifo object that handles messages sent
-     * and received from the server. That structure makes this function
-     * quite useless, however, the protocol specifies that it is better
-     * that the client PINGs, rather than the server.
-     *
-     * Then, course, present the fifo object/streams to the top level.
-     */
-
-    /*
-     * FIFO:
-     * https://stackoverflow.com/questions/1262808/which-stl-container-should-i-use-for-a-fifo
-     *
-     * std::queue for the interface. Unsure about the container, but chunk allocating would
-     * seem to be better, which will expand only if the server/client sends messages faster than
-     * the lib can process them. This is already standard for std::queue, though.
-     */
 }
 
 void client::read_handler(const std::string &content)
