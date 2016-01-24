@@ -48,7 +48,6 @@ void connection::connect()
 
 void connection::run()
 {
-    //std::thread write_handler_thread(write_handler_);
     std::thread ping_handler_thread(ping_handler);
 
     /*
