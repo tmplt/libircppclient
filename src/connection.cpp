@@ -73,6 +73,7 @@ void connection::ping()
         /* Arbitrary interval decided by mimicing WeeChat. */
         std::this_thread::sleep_for(1min + 30s);
 
+        /* For debugging */
         std::cout << "[info] Pinging " << addr_ << '.' << std::endl;
         write("PING " + addr_);
     }
