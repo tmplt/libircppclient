@@ -70,7 +70,7 @@ void connection::ping()
     using namespace std::literals;
 
     while (do_ping) {
-        /* Arbitrary interval decided by mimicing WeeChat. */
+        /* Interval decided by mimicing WeeChat. */
         std::this_thread::sleep_for(1min + 30s);
 
         /* For debugging */
