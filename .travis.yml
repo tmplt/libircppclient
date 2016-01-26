@@ -7,6 +7,7 @@ compiler:
 # Currently, clang is updated on both builds, which shouldn't be the case.
 # Fix this so that it only updates when clang is going to be used.
 before_install:
+  - ./util/check_tabs.sh
   - uname -a                                                  # Ubuntu Precise
   - sudo add-apt-repository --yes ppa:sfttech/random          # CMake
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # GCC toolchain with C++14 support, also needed for the llvm deb.
