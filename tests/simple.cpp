@@ -6,10 +6,15 @@ namespace irc = libircppclient;
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2) {
+        cout << "[Error] at least an address argument is required" << endl;
+        return 1;
+    }
+
     irc::config conf;
-    conf.address = "localhost";
-    conf.port    = "6667";
-    conf.nick    = "Temeraire";
+    conf.address = argv[1];
+    conf.port    = (argv[2] ? argv[2] : "6667");
+    conf.nick    = "libicppbot";
     conf.user    = "libircppclient";
     conf.ssl     = false;
 
