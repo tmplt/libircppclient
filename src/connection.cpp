@@ -70,7 +70,12 @@ void connection::ping()
     using namespace std::literals;
 
     while (do_ping) {
-        /* Interval decided by mimicing WeeChat. */
+        /*
+         * Interval decided by mimicing WeeChat.
+         * The standard does not seem to explicitly
+         * state a ping inverval. Is it the server's
+         * decision?
+         */
         std::this_thread::sleep_for(1min + 30s);
 
         /* For debugging */
