@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     irc::config conf;
     conf.address = argv[1];
     conf.port    = (argv[2] ? argv[2] : "6667");
-    conf.nick    = "libicppbot";
+    conf.nick    = "libircppbot";
     conf.user    = "libircppclient";
     conf.ssl     = false;
 
