@@ -70,6 +70,7 @@ void connection::ping()
     using namespace std::literals;
 
     while (do_ping) {
+
         /*
          * Interval decided by mimicing WeeChat.
          * The standard does not seem to explicitly
@@ -105,6 +106,7 @@ void connection::read(const boost::system::error_code &error, std::size_t length
         /* Unable to read from server. */
         throw error;
     } else {
+
         /*
          * Works in synergy with socket::async_read_some().
          *

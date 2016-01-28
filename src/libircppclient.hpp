@@ -33,9 +33,9 @@ public:
     client(const config &c);
 
     void nick(const std::string &nick);
-    void join(const std::string &chan, const std::string &key);
+    void join(const std::string &chan, const std::string &key = "");
     void msg(const std::string &target, const std::string &message);
-    void quit(const std::string &message);
+    void quit(const std::string &message = "");
 
     /*
      * As this lib is not feature-done, yet:
@@ -66,7 +66,6 @@ protected:
      * to handle certain messages from the server.
      */
     void read_handler(const std::string &content);
-
     std::vector<read_handler_t> read_handlers_;
 
     connection con;
