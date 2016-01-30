@@ -7,7 +7,7 @@
 
 using boost::asio::ip::tcp;
 
-namespace libircppclient {
+namespace irc {
 
 /*
  * Type which refer to a function that handles
@@ -129,8 +129,7 @@ private:
     std::array<char, 512> buffer_;
 };
 
-/* ns libircppclient */
+/* ns irc */
 }
 
-/* #endif CONNECTION_HPP */
 #endif

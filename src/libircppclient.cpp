@@ -11,7 +11,7 @@
  * the lib can process them. This is already standard for std::queue, though.
  */
 
-namespace libircppclient {
+namespace irc {
 
 client::client(const config &c)
     : conf_(c)
@@ -60,5 +60,5 @@ void client::raw_cmd(const std::string &content)
     con.write(content);
 }
 
-/* ns libircppclient */
+/* ns irc */
 }

@@ -5,7 +5,7 @@
 
 using boost::asio::ip::tcp;
 
-namespace libircppclient {
+namespace irc {
 
 void connection::connect(const std::string &addr, const std::string &port)
 {
@@ -149,5 +149,5 @@ void connection::stop()
     io_service_.stop();
 }
 
-/* ns libircppclient */
+/* ns irc */
 }

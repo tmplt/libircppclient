@@ -8,8 +8,6 @@
 using std::cout; using std::endl;
 using std::endl;
 
-namespace irc = libircppclient;
-
 int main()
 {
     irc::connection con;

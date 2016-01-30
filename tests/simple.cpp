@@ -2,8 +2,6 @@
 #include <iostream>
 using std::cout;    using std::endl;
 
-namespace irc = libircppclient;
-
 int main(int argc, char *argv[])
 {
     if (argc < 2) {

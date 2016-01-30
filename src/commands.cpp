@@ -12,7 +12,7 @@
  * Return errors for those exceptions?
  */
 
-namespace libircppclient {
+namespace irc {
 
 void client::nick(const std::string &nick)
 {
@@ -52,5 +52,5 @@ void client::quit(const std::string &message)
     stop();
 }
 
-/* ns libircppclient */
+/* ns irc */
 }

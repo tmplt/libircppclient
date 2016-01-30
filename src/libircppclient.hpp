@@ -4,7 +4,7 @@
 #include "connection.hpp"
 #include <vector>
 
-namespace libircppclient {
+namespace irc {
 
 /*
  * It really feels like this isn't the quick-n-simple implementation
