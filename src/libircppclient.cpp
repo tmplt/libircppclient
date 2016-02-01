@@ -16,11 +16,15 @@ namespace irc {
 client::client(const config &c)
     : conf_(c)
 {
-    /* For debugging */
+    /*
+     * "Bind" the external read handlers from connection to
+     * read_handler() here.
+     */
     con.set_ext_read_handler([this](const std::string &content) {
         this->read_handler(content);
     });
 
+    /* For debugging */
     add_read_handler([](const std::string &m) {
         std::cout << m;
     });
