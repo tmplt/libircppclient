@@ -1,6 +1,4 @@
-#ifndef CONNECTION_HPP
-#define CONNECTION_HPP
-
+#pragma once
 #include <boost/asio.hpp>
 #include <functional>
 #include <string>
@@ -131,5 +129,3 @@ private:
 
 /* ns irc */
 }
-
-#endif

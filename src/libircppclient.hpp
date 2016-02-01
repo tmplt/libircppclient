@@ -1,6 +1,4 @@
-#ifndef LIBIRCPPCLIENT_HPP
-#define LIBIRCPPCLIENT_HPP
-
+#pragma once
 #include "connection.hpp"
 #include <vector>
 
@@ -181,6 +179,3 @@ private:
 
 /* ns libircppclient */
 }
-
-/* endif LIBIRCPPCLIENT */
-#endif
