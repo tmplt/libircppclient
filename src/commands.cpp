@@ -22,15 +22,12 @@ void client::nick(const std::string &nick)
     con.write("NICK " + nick);
 }
 
-void client::join(const std::string &chan, const std::string &key)
+void client::join(const std::string &chans, const std::string &keys)
 {
-    if (chan.empty())
-        return;
-
-    if (key.empty())
-        con.write("JOIN " + chan);
+    if (keys.empty())
+        con.write("JOIN " + chans);
     else
-        con.write("JOIN " + chan + ' ' + key);
+        con.write("JOIN " + chans + ' ' + keys);
 }
 
 void client::msg(const std::string &target, const std::string &message)
