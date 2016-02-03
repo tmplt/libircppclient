@@ -43,3 +43,6 @@ build/
 
 # CLion
 .idea
+
+# I'm way too lazy to configure a separate project for tests
+tests/unit_*
