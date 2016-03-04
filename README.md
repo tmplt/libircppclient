@@ -1,16 +1,60 @@
-libircppclient
-==============
+<center>libircppclient</center>
+===============================
+<center>
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
+</center>
 
-An easy-to-use IRC-client based on Boost.asio to send and process data from IRC servers.
 
-Design Goals
+A simple library for communication with IRC servers.
+
+Currently, the current implementation within a program using this library is a `struct` containing the following:
+
+```cpp
+struct config {
+    /* Default values. */
+    std::string
+    address = "",
+    port    = "6667",
+    nick    = "Temeraire",
+    user    = "Laurence",
+
+    /* Optional */
+
+    /* For identification with NickServ */
+    nick_pw   = "",
+    server_pw = "";
+
+    /* Support not yet implemented */
+    bool ssl= true;
+};
+```
+
+which is simply passed as an argument to `irc::client()` as seen in `simple.cpp`:
+
+```cpp
+irc::config conf;
+conf.address = argv[1];
+conf.port    = (argv[2] ? argv[2] : "6667");
+conf.nick    = "libircppbot";
+conf.user    = "libircppclient";
+conf.ssl     = false;
+
+conf.nick_pw   = "";
+conf.server_pw = "";
+
+irc::client client(conf);
+
+client.start();
+```
+
+Design Goals and Plans
 ------------
-* An easy-to-use library to connect to IRC servers and send data back and forth.
+* Simple, logical, and easy to use.
 * Full compliance with [RFC1459](https://tools.ietf.org/html/rfc1459) and by extension [IRCv3](http://ircv3.net/).
 * Unicode support.
 * Colour support.
 * Thread-safe and whatever C++ libraries should be.
+* Debug program with an interactive shell (akin to interactive Python).
 
 Dependencies
 ------------
