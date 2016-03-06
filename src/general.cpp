@@ -1,23 +1,16 @@
 #include <algorithm>
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
-#include <iostream>
 #include "general.hpp"
-
-using std::cout; using std::endl;
 
 bool gen::is_integer(const std::string &s)
 {
-    /*
-     * Credit to Charles Salvia;
-     * http://stackoverflow.com/a/4654718
-     *
-     * Searches for the first element which does not
-     * return false. If none are found, s.end() == s.end()
-     * is expressed.
-     */
-    return !s.empty() && std::find_if(s.begin(),
-        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+    for (char c : s) {
+        if (!std::isdigit(c))
+            return false;
+    }
+
+    return true;
 }
 
 bool gen::valid_addr(const std::string &addr)
