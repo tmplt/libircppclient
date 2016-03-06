@@ -24,7 +24,7 @@ struct config {
     server_pw = "";
 
     /* Support not yet implemented */
-    bool ssl= true;
+    bool ssl  = false;
 };
 ```
 
