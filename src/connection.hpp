@@ -69,9 +69,6 @@ public:
      */
     void ping();
 
-    /* TODO: implement */
-    void reset_timer();
-
     /* Fail-safe for ping() */
     void pong();
 

@@ -97,7 +97,6 @@ void connection::write(const std::string &content)
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
     boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
-    //reset_timer();
 }
 
 void connection::read(const boost::system::error_code &error, std::size_t length)
