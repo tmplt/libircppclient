@@ -31,15 +31,7 @@ public:
     client(const config &c);
 
     void start();
-    void stop()
-    {
-        /*
-         * Haven't I forgotten something?
-         * Some async function that needs terminating, maybe?
-         */
-        con.stop_ping();
-        con.stop();
-    }
+    void stop();
 
     /* Add a read_handler that may not exist in this class. */
     void add_read_handler(read_handler_t func);

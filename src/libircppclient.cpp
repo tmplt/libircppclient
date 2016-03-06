@@ -43,6 +43,16 @@ void client::start()
     con.run();
 }
 
+void client::stop()
+{
+    /*
+     * Haven't I forgotten something?
+     * Some async function that needs terminating, maybe?
+     */
+    con.stop_ping();
+    con.stop();
+}
+
 void client::read_handler(const std::string &content)
 {
     /*

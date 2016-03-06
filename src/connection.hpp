@@ -23,12 +23,12 @@ public:
 
     /*
      * Check if given data is valid, then attempt to connect to the
-     * server. Throw an error if unsuccessful.
+     * server. Throw an error if unsuccessful or if the data is invalid.
      */
     void connect(const std::string &addr, const std::string &port);
 
     /*
-     * While not directly the connection itself, these functions refer to
+     * While not the connection itself, these functions refer to
      * the io_service and the loop itself.
      */
     void run();

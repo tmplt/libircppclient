@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
 </center>
 
-
 A simple library for communication with IRC servers.
 
 Currently, the current implementation within a program using this library is a `struct` containing the following:
@@ -46,6 +45,8 @@ irc::client client(conf);
 
 client.start();
 ```
+
+Any new ideas for the interaction with the library is welcomed!
 
 Design Goals and Plans
 ------------

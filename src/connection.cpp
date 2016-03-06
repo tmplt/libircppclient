@@ -55,9 +55,9 @@ void connection::run()
      * Pass the arguments (this, _1, _2) to the handler.
      */
     socket_.async_read_some(boost::asio::buffer(buffer_),
-                            boost::bind(&connection::read,
-                                        this, boost::asio::placeholders::error,
-                                        boost::asio::placeholders::bytes_transferred()));
+        boost::bind(&connection::read,
+            this, boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred()));
 
     io_service_.run();
 
@@ -124,9 +124,9 @@ void connection::read(const boost::system::error_code &error, std::size_t length
          * Pass the eventual error and the message length.
          */
         socket_.async_read_some(boost::asio::buffer(buffer_),
-                                boost::bind(&connection::read,
-                                            this, boost::asio::placeholders::error,
-                                            boost::asio::placeholders::bytes_transferred));
+            boost::bind(&connection::read,
+                this, boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
     }
 }
 

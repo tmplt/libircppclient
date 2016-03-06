@@ -1,1 +1,0 @@
-At present, I will not accept any pull requests as this library is the topical component of a high-school degree.

@@ -40,7 +40,6 @@ find_package(Threads REQUIRED)
 add_subdirectory(src)
 add_subdirectory(tests)
 
-
 string(CONCAT PROJECT_NAME_VERSION ${PROJECT_NAME}\ v${VERSION_STRING}+${GIT_COMMIT_HASH})
 
 # Is it possible to repeat a character n times?
