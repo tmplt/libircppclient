@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/) and [ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm).
 
+## [0.2.1] - 2016-03-06
+### Added
+- Address and port validation.
+
 ## [0.2.0] - 2016-02-01
 ### Added
 - AWAY, PART, TOPIC, NAMES, INVITE, KICK, and LIST IRC commands.
