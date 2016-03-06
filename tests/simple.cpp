@@ -19,7 +19,12 @@ int main(int argc, char *argv[])
     conf.nick_pw   = "";
     conf.server_pw = "";
 
-    irc::client client(conf);
-
-    client.start();
+    try {
+        irc::client client(conf);
+        client.start();
+    } catch (const std::exception &e) {
+        cout << "Exception thrown: " << e.what() << endl;
+    } catch (const boost::system::error_code &e) {
+        cout << "Boost error: " << e.message() << endl;
+    }
 }

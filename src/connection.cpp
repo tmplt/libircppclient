@@ -1,7 +1,8 @@
 #include "connection.hpp"
 #include <boost/thread.hpp>
+#include "general.hpp"
 #include <thread>
-#include <chrono>
+#include <stdexcept>
 
 using boost::asio::ip::tcp;
 
@@ -9,7 +10,15 @@ namespace irc {
 
 void connection::connect(const std::string &addr, const std::string &port)
 {
-    /* Perfect place to implement check of valid data */
+    if ( addr.empty() || port.empty() )
+        throw std::invalid_argument("address or port empty.");
+
+    if ( !gen::valid_addr(addr) )
+        throw std::invalid_argument("invalid address.");
+
+    if ( !gen::is_integer(port) )
+        throw std::invalid_argument("port is a non-integer.");
+
     addr_ = addr;
     port_ = port;
 
