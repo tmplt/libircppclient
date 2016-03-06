@@ -38,7 +38,7 @@ void client::initialize()
 
 void client::start()
 {
-    con.connect(conf_.address, conf_.port);
+    con.connect(conf_.address, conf_.port, conf_.ssl);
     initialize();
     con.run();
 }

@@ -21,11 +21,11 @@ public:
     /* Bind used socket to the io_service. */
     connection() : socket_(io_service_) { }
 
-    /*
+     /*
      * Check if given data is valid, then attempt to connect to the
      * server. Throw an error if unsuccessful or if the data is invalid.
      */
-    void connect(const std::string &addr, const std::string &port);
+    void connect(const std::string &addr, const std::string &port, const bool ssl);
 
     /*
      * While not the connection itself, these functions refer to

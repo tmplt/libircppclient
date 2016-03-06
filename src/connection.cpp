@@ -8,21 +8,28 @@ using boost::asio::ip::tcp;
 
 namespace irc {
 
-void connection::connect(const std::string &addr, const std::string &port)
+void connection::connect(const std::string &addr, const std::string &port, const bool ssl)
 {
-    if ( addr.empty() || port.empty() )
-        throw std::invalid_argument("address or port empty.");
+    if ( addr.empty() )
+        throw std::invalid_argument("adress is empty.");
 
-    if ( !gen::valid_addr(addr) )
+    else if ( !gen::valid_addr(addr) )
         throw std::invalid_argument("invalid address.");
 
-    if ( !gen::is_integer(port) )
-        throw std::invalid_argument("port is a non-integer.");
+    if (port.empty()) {
+        port_ = (ssl ? "6697" : "6667");
+        addr_ = addr;
 
-    addr_ = addr;
-    port_ = port;
+        connect();
 
-    connect();
+    } else if ( !gen::is_integer(port) )
+        throw std::invalid_argument("port is a non-integer");
+    else {
+        addr_ = addr;
+        port_ = port;
+
+        connect();
+    }
 }
 
 void connection::connect()
