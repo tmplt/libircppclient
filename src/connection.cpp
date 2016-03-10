@@ -10,10 +10,10 @@ namespace irc {
 
 void connection::connect(const std::string &addr, const std::string &port, const bool ssl)
 {
-    if ( addr.empty() )
+    if (addr.empty())
         throw std::invalid_argument("adress is empty.");
 
-    else if ( !gen::valid_addr(addr) )
+    else if (!gen::valid_addr(addr))
         throw std::invalid_argument("invalid address.");
 
     if (port.empty()) {
@@ -22,7 +22,7 @@ void connection::connect(const std::string &addr, const std::string &port, const
 
         connect();
 
-    } else if ( !gen::is_integer(port) )
+    } else if (!gen::is_integer(port))
         throw std::invalid_argument("port is a non-integer");
     else {
         addr_ = addr;
