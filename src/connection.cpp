@@ -46,7 +46,7 @@ void connection::connect()
     /* Denotes the end of the list of generated endpoints. */
     decltype(endpt_it) end;
 
-    /* Default error */
+    /* Default error. */
     boost::system::error_code error = boost::asio::error::host_not_found;
 
     /* Iterate until we've reached the end of the list. */

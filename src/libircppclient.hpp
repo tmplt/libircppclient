@@ -33,11 +33,11 @@ public:
     void start();
     void stop();
 
-    /* Add a read_handler that may not exist in this class. */
+    /* Add a read_handler that may exist whereever. */
     void add_read_handler(read_handler_t func);
 
     /*
-     * In all commands where a channel name must/may be passed,
+     * In all functions where a channel name must/may be passed,
      * the channel prefix [#|&|...] must be included.
      */
 
@@ -72,13 +72,12 @@ public:
 
     //void mode()
 
-    /* Recieve topic, or set it, if a topic is passed. */
+    /* Recieve the topic, or set it, if a topic is passed. */
     void topic(const std::string &chan, const std::string &topic = "");
 
     /*
      * Recieve a list of nicknames on a channel, or a full list of
-     * all channels and viewable nicknames, if one or more
-     * channels aren't passed.
+     * all channels and viewable nicknames, if no channel(s) is passed.
      */
     void names(const std::string &chans = "");
 
@@ -140,7 +139,7 @@ public:
 
     /*
      * Unmark yourself as being away, or mark yourself as such,
-     * if a 'message' is passed.
+     * if a message is passed.
      */
     void away(const std::string &message = "");
 

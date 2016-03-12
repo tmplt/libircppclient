@@ -35,7 +35,7 @@ void client::msg(const std::string &target, const std::string &message)
     if (message.empty() || target.empty())
         return;
 
-    /* Applies to channels and nicks */
+    /* Applies to channels and nicks, both */
     con.write("PRIVMSG " + target + " :" + message);
 }
 

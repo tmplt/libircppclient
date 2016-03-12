@@ -8,8 +8,7 @@ using boost::asio::ip::tcp;
 namespace irc {
 
 /*
- * Type which refer to a function that handles
- * specific data received from the server.
+ * Handles data received from the server.
  */
 typedef std::function<void (const std::string &content)> read_handler_t;
 
@@ -18,36 +17,33 @@ typedef std::function<void (void)> ping_t;
 
 class connection {
 public:
-    /* Bind used socket to the io_service. */
+    /* "Bind" used socket to the io_service. */
     connection() : socket_(io_service_) { }
 
      /*
-     * Check if given data is valid, then attempt to connect to the
+     * Check if given arguments are valid, then attempt to connect to the
      * server. Throw an error if unsuccessful or if the data is invalid.
      */
     void connect(const std::string &addr, const std::string &port, const bool ssl);
 
-    /*
-     * While not the connection itself, these functions refer to
-     * the io_service and the loop itself.
-     */
+    /* io_service, and the loop itself; not the connection itself. */
     void run();
     void stop();
 
     /*
      * Asynchronously loop this function and push any read data to
-     * read_handler().
+     * read_handler()...
      */
     void read(const boost::system::error_code &error, std::size_t length);
 
     /* Only handles connection-specific requests, e.g., PING */
     void read_handler(const std::string &content);
 
-    /* But write synchronously. */
+    /* ... but write synchronously. */
     void write(const std::string &content);
 
     /*
-     * Binds the external read handler, which handles everything
+     * "Binds" the external read handler, which handles everything
      * this class' read_handler() do not. Bound function may
      * exist in any class.
      */
@@ -59,17 +55,15 @@ public:
     /*
      * So that we do not get kicked from the server, and so that the
      * server itself does not have to ping us, which seems preferable
-     * in the specification.
+     * in the IRC specification.
      *
      * In a perfect implementation, this should only be used when no
-     * data has been sent to the server for a specified amount of time.
-     * Currently it will ping disregarding if a message to the server has
-     * been sent or not within the time-frame. Should we implement a
-     * timer for this?
+     * command has been sent to the server for a specified amount of time.
+     * Currently, the implementation does not adhere to this.
      */
     void ping();
 
-    /* Fail-safe for ping() */
+    /* Fail-safe for ping(). */
     void pong();
 
     /* For a graceful shutdown. */
@@ -103,11 +97,7 @@ private:
     ping_t ping_handler = std::bind(&connection::ping, this);
     bool   do_ping = true;
 
-    /*
-     * As the over-loaded function assigns addr and port,
-     * and then calls base connect(), this is a private
-     * member function.
-     */
+    /* Only called by the overloaded function, thus private. */
     void connect();
 
     /*
