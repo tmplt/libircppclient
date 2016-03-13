@@ -11,16 +11,16 @@ namespace irc {
 struct config {
     /* Default values. */
     std::string
-    address = "",
-    port    = "6667",
-    nick    = "Temeraire",
-    user    = "Laurence",
+        address = "",
+        port    = "6667",
+        nick    = "Temeraire",
+        user    = "Laurence",
 
     /* Optional */
 
-    /* For identification with NickServ */
-    nick_pw   = "",
-    server_pw = "";
+        /* For identification with NickServ */
+        nick_pw   = "",
+        server_pw = "";
 
     /* Support not yet implemented */
     bool ssl  = false;

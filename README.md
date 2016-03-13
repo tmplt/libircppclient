@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
 </center>
 
-A simple library for communication with IRC servers.
+A simple-to-use library for communication with IRC servers.
 
 Currently, the current implementation within a program using this library is a `struct` containing the following:
 
@@ -12,16 +12,16 @@ Currently, the current implementation within a program using this library is a `
 struct config {
     /* Default values. */
     std::string
-    address = "",
-    port    = "6667",
-    nick    = "Temeraire",
-    user    = "Laurence",
+        address = "",
+        port    = "6667",
+        nick    = "Temeraire",
+        user    = "Laurence",
 
     /* Optional */
 
-    /* For identification with NickServ */
-    nick_pw   = "",
-    server_pw = "";
+        /* For identification with NickServ */
+        nick_pw   = "",
+        server_pw = "";
 
     /* Support not yet implemented */
     bool ssl  = false;
