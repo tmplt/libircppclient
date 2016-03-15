@@ -7,9 +7,7 @@ using boost::asio::ip::tcp;
 
 namespace irc {
 
-/*
- * Handles data received from the server.
- */
+/* Handles data received from the server. */
 typedef std::function<void (const std::string &content)> read_handler_t;
 
 /* Only used to keep the connection alive. */
