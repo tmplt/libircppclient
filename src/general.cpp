@@ -5,7 +5,7 @@
 
 bool gen::is_integer(const std::string &s)
 {
-    for (char c : s) {
+    for (char c: s) {
         if (!std::isdigit(c))
             return false;
     }
@@ -21,7 +21,7 @@ bool gen::valid_addr(const std::string &addr)
 
     /*
      * Only checks if addr is in an ipv4/6 address.
-     * Addresses such as irc.dragons.rocks and localhost
+     * Addresses such as irc.domain.tld and localhost
      * are invalid here.
      */
     boost::system::error_code ec;
