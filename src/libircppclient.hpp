@@ -119,9 +119,11 @@ public:
      */
     void who(const std::string &query = "", const bool operators = false);
 
-    // Whois query
+    /* Query info about particular users. */
+    void whois(const std::string &ids, const std::string &server = "");
 
-    // Whowas query
+    /* Query info about a user that no longer exists. */
+    void whowas(const std::string &nick, const std::string &count = "", const std::string &server = "");
 
 // Optional commands:
 

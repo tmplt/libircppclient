@@ -67,6 +67,32 @@ void client::who(const std::string &query, const bool operators)
 
 }
 
+void client::whois(const std::string &ids, const std::string &server)
+{
+    if (ids.empty())
+        throw std::invalid_argument("ids is empty.");
+
+    if (server.empty())
+        con.write("WHOIS " + ids);
+    else
+        con.write("WHOIS " + server + ' ' + ids);
+}
+
+void client::whowas(const std::string &nick, const std::string &count, const std::string &server)
+{
+    if (nick.empty())
+        throw std::invalid_argument("nick is empty");
+
+    if (count.empty() && server.empty())
+        con.write("WHOWAS " + nick);
+    else {
+        if (server.empty())
+            con.write("WHOWAS " + nick + ' ' + count);
+        else
+            con.write("WHOWAS " + nick + ' ' + count + ' ' + server);
+    }
+}
+
 void client::oper(const std::string &nick, const std::string &pass)
 {
     if (nick.empty() || pass.empty())
