@@ -1,6 +1,6 @@
 # Enables some functionality
 cmake_minimum_required(VERSION 3.0)
-project(libircppclient VERSION 0.3.0)
+project(libircppclient VERSION 0.4.0)
 
 # Get the latest abbreviated commit hash of the working branch
 execute_process(
