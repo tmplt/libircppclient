@@ -91,7 +91,7 @@ public:
     void invite(const std::string &nick, const std::string &chan);
 
     /* Kick nickname(s) from channel(s) with an optional comment. */
-    void kick(const std::string &channel, const std::string &nick,
+    void kick(const std::string &chan, const std::string &id,
               const std::string &comment = "");
 
 // Server queries and commands
@@ -119,7 +119,7 @@ public:
     void msg(const std::string &target, const std::string &message);
 
     /* Notice a channel/nick with a message */
-    void notice(const std::string &nick, const std::string &message);
+    void notice(const std::string &target, const std::string &message);
 
 // User-based queries
 

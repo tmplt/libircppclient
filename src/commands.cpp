@@ -17,13 +17,16 @@ namespace irc {
 void client::nick(const std::string &nick)
 {
     if (nick.empty())
-        return;
+        throw std::invalid_argument("nick is empty.");
 
     con.write("NICK " + nick);
 }
 
 void client::join(const std::string &chans, const std::string &keys)
 {
+    if (chans.empty())
+        throw std::invalid_argument("chans is empty.");
+
     if (keys.empty())
         con.write("JOIN " + chans);
     else
@@ -33,7 +36,7 @@ void client::join(const std::string &chans, const std::string &keys)
 void client::msg(const std::string &target, const std::string &message)
 {
     if (message.empty() || target.empty())
-        return;
+        throw std::invalid_argument("message or target empty");
 
     /* Applies to channels and nicks, both */
     con.write("PRIVMSG " + target + " :" + message);
@@ -59,11 +62,17 @@ void client::away(const std::string &message)
 
 void client::part(const std::string &chans)
 {
+    if (chans.empty())
+        throw std::invalid_argument("chans is empty");
+
     con.write("PART " + chans);
 }
 
 void client::topic(const std::string &chan, const std::string &topic)
 {
+    if (chan.empty())
+        throw std::invalid_argument("chan is empty");
+
     if (topic.empty())
         con.write("TOPIC " + chan);
     else
@@ -80,15 +89,21 @@ void client::names(const std::string &chans)
 
 void client::invite(const std::string &nick, const std::string &chan)
 {
+    if (nick.empty() || chan.empty())
+        throw std::invalid_argument("");
+
     con.write("INVITE " + nick + ' ' + chan);
 }
 
-void client::kick(const std::string &chans, const std::string &nicks, const std::string &comment)
+void client::kick(const std::string &chan, const std::string &id, const std::string &comment)
 {
+    if (chan.empty() || id.empty())
+        throw std::invalid_argument("chan or id empty.");
+
     if (comment.empty())
-        con.write("KICK " + chans + ' ' + nicks);
+        con.write("KICK " + chan + ' ' + id);
     else
-        con.write("KICK " + chans + ' ' + nicks + " :" + comment);
+        con.write("KICK " + chan + ' ' + id + " :" + comment);
 }
 
 void client::list(const std::string &chans)
