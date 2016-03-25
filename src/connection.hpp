@@ -22,7 +22,7 @@ public:
      * Check if given arguments are valid, then attempt to connect to the
      * server. Throw an error if unsuccessful or if the data is invalid.
      */
-    void connect(const std::string &addr, const std::string &port, const bool ssl);
+    void connect(const std::string &addr, std::string &port, const bool ssl);
 
     /* io_service, and the loop itself; not the connection itself. */
     void run();
