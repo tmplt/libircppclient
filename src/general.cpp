@@ -29,7 +29,7 @@ bool gen::valid_addr(const std::string &addr)
 
     if (ec) {
 
-        /* Do what the preview statement could not. */
+        /* Do what the previous statement could not. */
         if (std::find_if(addr.begin(), addr.end(),
             [](char c) {
                 return !std::isdigit(c) &&

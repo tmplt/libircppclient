@@ -46,11 +46,10 @@ public:
     /* Set nickname */
     void nick(const std::string &nick);
 
-    // Password message
-
-    // User message
-
-    // Server message
+    /*
+     * Command: USER
+     * Required?
+     */
 
     // Operator message
 
@@ -60,14 +59,12 @@ public:
      */
     void quit(const std::string &message = "");
 
-    // Server quit message
-
 // Channel operations
 
-    /* Join channel(s) */
+    /* Join channel(s). */
     void join(const std::string &chans, const std::string &keys = "");
 
-    /* Leave channel(s) */
+    /* Leave channel(s). */
     void part(const std::string &chans);
 
     //void mode()
@@ -93,25 +90,6 @@ public:
     /* Kick nickname(s) from channel(s) with an optional comment. */
     void kick(const std::string &chan, const std::string &id,
               const std::string &comment = "");
-
-// Server queries and commands
-
-    /* Query the version of the server program. */
-    void version(const std::string &server = "");
-
-    // Stats message
-
-    // Links message
-
-    // Time message
-
-    // Connect message
-
-    // Trace message
-
-    // Admin message
-
-    // Info message
 
 // Sending messages
 
