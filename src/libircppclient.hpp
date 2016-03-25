@@ -43,6 +43,12 @@ public:
 
 // Connection registration
 
+    /*
+     * Command: PASS
+     * Sends password to the server?
+     * Required before any registration message
+     */
+
     /* Set nickname */
     void nick(const std::string &nick);
 
@@ -51,7 +57,8 @@ public:
      * Required?
      */
 
-    // Operator message
+    /* Get operator (+o) status */
+    void oper(const std::string &nick, const std::string &pass);
 
     /*
      * Disconnect from the server with an optional quit message.
@@ -67,7 +74,12 @@ public:
     /* Leave channel(s). */
     void part(const std::string &chans);
 
-    //void mode()
+    /*
+     * Set channel or user mode.
+     * id is used because the argument does not have to be a nick;
+     * it may be the full identifier, also.
+     */
+    void mode(const std::string &chan, const std::string &modes, const std::string &id = "");
 
     /* Recieve the topic, or set it, if a topic is passed. */
     void topic(const std::string &chan, const std::string &topic = "");
@@ -101,7 +113,11 @@ public:
 
 // User-based queries
 
-    // Who query
+    /*
+     * Query info about all users, of users matching the search query.
+     * If operators is true, query only for those.
+     */
+    void who(const std::string &query = "", const bool operators = false);
 
     // Whois query
 

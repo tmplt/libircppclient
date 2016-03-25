@@ -42,6 +42,40 @@ void client::msg(const std::string &target, const std::string &message)
     con.write("PRIVMSG " + target + " :" + message);
 }
 
+void client::notice(const std::string &target, const std::string &message)
+{
+    if (message.empty() || target.empty())
+        throw std::invalid_argument("target or message empty");
+
+    con.write("NOTICE " + target + " :" + message);
+}
+
+void client::who(const std::string &query, const bool operators)
+{
+    /* As per the RFC. */
+    if (query.empty() || query == "0") {
+        if (operators)
+            con.write("WHO o");
+        else
+            con.write("WHO");
+    } else {
+        if (operators)
+            con.write("WHO " + query + " o");
+        else
+            con.write("WHO " + query);
+    }
+
+}
+
+void client::oper(const std::string &nick, const std::string &pass)
+{
+    if (nick.empty() || pass.empty())
+        throw std::invalid_argument("nick or pass empty");
+
+    else
+        con.write("OPER " + nick + ' ' + pass);
+}
+
 void client::quit(const std::string &message)
 {
     if (message.empty())
@@ -66,6 +100,17 @@ void client::part(const std::string &chans)
         throw std::invalid_argument("chans is empty");
 
     con.write("PART " + chans);
+}
+
+void client::mode(const std::string &chan, const std::string &modes, const std::string &id)
+{
+    if (chan.empty() || modes.empty())
+        throw std::invalid_argument("chan or modes empty");
+
+    if (id.empty())
+        con.write("MODE " + chan + ' ' + modes);
+    else
+        con.write("MODE " + chan + ' ' + modes + ' ' + id);
 }
 
 void client::topic(const std::string &chan, const std::string &topic)
