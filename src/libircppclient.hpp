@@ -41,7 +41,7 @@ public:
      * the channel prefix [#|&|...] must be included.
      */
 
-// Connection registration
+// Connection registration:
 
     /*
      * Command: PASS
@@ -66,7 +66,7 @@ public:
      */
     void quit(const std::string &message = "");
 
-// Channel operations
+// Channel operations:
 
     /* Join channel(s). */
     void join(const std::string &chans, const std::string &keys = "");
@@ -103,7 +103,7 @@ public:
     void kick(const std::string &chan, const std::string &id,
               const std::string &comment = "");
 
-// Sending messages
+// Sending messages:
 
     /* Message a nick or a channel. */
     void msg(const std::string &target, const std::string &message);
@@ -111,7 +111,7 @@ public:
     /* Notice a channel/nick with a message */
     void notice(const std::string &target, const std::string &message);
 
-// User-based queries
+// User-based queries:
 
     /*
      * Query info about all users, of users matching the search query.
@@ -123,13 +123,7 @@ public:
 
     // Whowas query
 
-// Miscellaneous messages
-
-    // Kill message
-
-    // Error message
-
-// Optional messages
+// Optional commands:
 
     /*
      * Unmark yourself as being away, or mark yourself as such,
@@ -137,10 +131,9 @@ public:
      */
     void away(const std::string &message = "");
 
-// End of IRC commands.
+// End of RFC commands.
 
     /*
-     * As this lib is not feature-complete yet:
      * Send the given content directly to the server
      * as a command.
      */

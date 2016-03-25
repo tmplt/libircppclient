@@ -71,6 +71,9 @@ void client::add_read_handler(std::function<void(const std::string &)> func)
 
 void client::raw_cmd(const std::string &content)
 {
+    if (content.empty())
+        throw std::invalid_argument("content is empty");
+
     con.write(content);
 }
 
