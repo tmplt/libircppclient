@@ -17,11 +17,9 @@ add_definitions(-std=c++14)
 
 # Linux Clang + AppleClang
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-
     set(CMAKE_SHARED_LINKER_FLAGS "-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-unused-parameters")
 
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
 
 endif()
@@ -41,9 +39,6 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 string(CONCAT PROJECT_NAME_VERSION ${PROJECT_NAME}\ v${VERSION_STRING}+${GIT_COMMIT_HASH})
-
-# Is it possible to repeat a character n times?
-#string(LENGTH ${PROJECT_NAME_VERSION} LENGTH)
 
 message("
         -----------------------------

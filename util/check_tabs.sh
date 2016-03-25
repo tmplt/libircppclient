@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 OUTPUT=$(grep -nRP '\t' --include=\*.{cpp,hpp})
 
