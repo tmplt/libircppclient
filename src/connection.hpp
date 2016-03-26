@@ -47,7 +47,7 @@ public:
      */
     void set_ext_read_handler(const read_handler_t &handler)
     {
-        ext_read_handler_  = handler;
+        ext_read_handler_ = handler;
     }
 
     /*
