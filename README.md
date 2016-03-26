@@ -48,6 +48,13 @@ client.start();
 
 Any new ideas for the interaction with the library is welcomed!
 
+Todo
+----
+* Make it easier to use.
+* Implement a FIFO structure for messages from the server.
+* Create a way to debug it.
+* Colour support.
+
 Design Goals and Plans
 ------------
 * Simple, logical, and easy to use.
@@ -55,12 +62,12 @@ Design Goals and Plans
 * Unicode support.
 * Colour support.
 * Thread-safe and whatever C++ libraries should be.
-* Debug program with an interactive shell (akin to interactive Python).
+* Debug program with an interactive shell (akin to interactive Python)?
 
 Dependencies
 ------------
 * CMake 3.0
-* Boost.asio (tested with >=1.59.0)
+* Boost.asio (tested with >= 1.59.0)
 * A compiler with C++14 support, such as Clang or GCC
 
 Thanks to:
