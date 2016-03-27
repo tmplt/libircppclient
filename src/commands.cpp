@@ -1,15 +1,14 @@
 #include "libircppclient.hpp"
 
 /*
- * TODO: These functions should return a value instead
- * of nothing.
- * Put returned errors in some kind of error stream?
+ * Should these functions return something instead of
+ * throwing stuff about?
  */
 
 /*
- * While there shouldn't be a reason to not pass an
- * argument to a command that requires it, it may still happen.
- * Return errors for those exceptions?
+ * Some IRC commands may have optional arguments.
+ * These arguments, in this library, are the tail arguments,
+ * even if they may not be that in the RFC.
  */
 
 namespace irc {
@@ -38,7 +37,7 @@ void client::msg(const std::string &target, const std::string &message)
     if (message.empty() || target.empty())
         throw std::invalid_argument("message or target empty");
 
-    /* Applies to channels and nicks, both */
+    /* Applies to channels and nicks, both. */
     con.write("PRIVMSG " + target + " :" + message);
 }
 
