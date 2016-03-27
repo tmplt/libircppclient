@@ -15,6 +15,8 @@ void connection::connect(const std::string &addr, std::string &port, const bool 
 
     else if (!gen::valid_addr(addr))
         throw std::invalid_argument("invalid address.");
+    else
+        throw std::invalid_argument("valid address and port!");
 
     if (port.empty()) {
         port = (ssl ? "6697" : "6667");
@@ -24,7 +26,7 @@ void connection::connect(const std::string &addr, std::string &port, const bool 
         addr_ = addr;
         port_ = port;
 
-        connect();
+        //connect();
     }
 }
 
