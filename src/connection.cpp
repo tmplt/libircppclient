@@ -2,7 +2,6 @@
 #include <boost/thread.hpp>
 #include "general.hpp"
 #include <thread>
-#include <stdexcept>
 
 using boost::asio::ip::tcp;
 
@@ -13,10 +12,14 @@ void connection::connect(const std::string &addr, std::string &port, const bool 
     if (addr.empty())
         throw std::invalid_argument("adress is empty.");
 
-    else if (!gen::valid_addr(addr))
-        throw std::invalid_argument("invalid address.");
-    else
-        throw std::invalid_argument("valid address and port!");
+    else try {
+            gen::valid_addr(addr);
+        }
+         catch (std::invalid_argument &e) {
+             std::string s = "invalid address, reason: ";
+             s += e.what();
+             throw std::invalid_argument(s);
+        }
 
     if (port.empty()) {
         port = (ssl ? "6697" : "6667");
@@ -26,7 +29,7 @@ void connection::connect(const std::string &addr, std::string &port, const bool 
         addr_ = addr;
         port_ = port;
 
-        //connect();
+        connect();
     }
 }
 

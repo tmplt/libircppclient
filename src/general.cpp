@@ -2,10 +2,7 @@
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/tokenizer.hpp>
-#include <iostream>
 #include "general.hpp"
-
-using std::cout; using std::endl;
 
 bool gen::is_integer(const std::string &s)
 {
@@ -26,8 +23,10 @@ gen::tokens_t gen::split_string(const std::string &s, const std::string &c)
     return tokens;
 }
 
-bool gen::valid_addr(const std::string &addr)
+void gen::valid_addr(const std::string &addr)
 {
+    using std::invalid_argument;
+
     /*
      * Only checks if addr is in an ipv4/6 address.
      * Addresses such as irc.domain.tld and localhost
@@ -41,52 +40,46 @@ bool gen::valid_addr(const std::string &addr)
      * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
      * '.' are counted, also.
      */
-    if (addr.length() > 255) {
-        cout << "[p] address length" << endl;
-        return false;
-    }
+    if (addr.length() > 255)
+        throw invalid_argument("the address is too long; it's illegal to exceed 255 characters.");
 
     if (ec) {
 
-        /* Check if all domains in the hostname are valid. */
+        /*
+         * Split the hostname into multiple domains
+         * and check each element.
+         */
+
         tokens_t tokens = split_string(addr, ".");
 
         for (auto &s: tokens) {
-            cout << s << endl;
-        }
 
-        cout << endl;
-        exit(0);
+            /*
+             * In case of "irc..hostname.tld", where the token between '..',
+             * would be empty.
+             */
+            if (s.empty())
+                throw invalid_argument("a token is empty, does the address contain \"..\"?");
 
-        /*
-         * A domain may not start with a hyphen,
-         * or any other special character.
-         */
-        if (!std::isalpha(addr[0]) && !std::isdigit(addr[0])) {
-            //if (std::isalpha(addr[0]))
-            //    cout << '\''<< addr[0] << "' is not a letter" << endl;
-            cout << "[f] addr[0] invalid ('" << addr[0] << "')" << endl;
-            return false;
-        } else
-            cout << "[p] addr[0] valid" << endl;
+            /* Also as per RFC 1035. */
+            if (s.front() == '-' || s.back() ==  '-')
+                throw invalid_argument("first of last character is a hyphen; that's not allowed.");
 
-        /*
-         * We have already checked the first character,
-         * but anything past it may denote a nth-level domain,
-         * or contain a hyphen.
-         */
-        if (std::find_if(addr.begin() + 1, addr.end(),
-            [](char c) {
-                cout << c;
-                return !std::isdigit(c) &&
-                       !std::isalpha(c) &&
-                       c != '-'         &&
-                       c != '.';        }) != addr.end())
-        {
-            cout << endl;
-            return false;
+            /*
+             * Only [A-Za-z0-9] are allowed.
+             *
+             * s[first] and s[last] are checked again, but they
+             * must be checked for non-[A-Za-z0-9], anyway.
+             */
+            if (std::find_if(s.begin(), s.end(),
+                [](char c) {
+                    return !std::isdigit(c) &&
+                           !std::isalpha(c) &&
+                           c != '-';        }) != s.end())
+            {
+                std::string reason = "\"" + s + '\"' + " contains an illegal character (non-[A-Za-z0-9]).";
+                throw invalid_argument(reason);
+            }
         }
     }
-
-    return true;
 }

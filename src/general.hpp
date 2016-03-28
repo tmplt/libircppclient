@@ -7,10 +7,13 @@ typedef boost::tokenizer<boost::escaped_list_separator<char>> tokens_t;
 
 bool is_integer(const std::string &s);
 
-/* Hostname, ipv4, or ipv6. */
-bool valid_addr(const std::string &url);
+/*
+ * Hostname, ipv4, or ipv6.
+ * Throws std::invalid_argument.
+ */
+void valid_addr(const std::string &url);
 
-/* Split a string into multiple parts. */
+/* Split a string into count(c) parts, return all tokens in an array. */
 tokens_t split_string(const std::string &s, const std::string &c);
 
 }
