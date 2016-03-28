@@ -19,14 +19,9 @@ bool gen::is_integer(const std::string &s)
 
 gen::tokens_t gen::split_string(const std::string &s, const std::string &c)
 {
-    using boost::escaped_list_separator;
-    using gen::tokens_t;
-    using std::vector;
-    using std::string;
-
     /* No escape character, nor quote character is used. */
-    escaped_list_separator<char> delim("", c, "");
-    tokens_t tokens(s, delim);
+    boost::escaped_list_separator<char> delim("", c, "");
+    gen::tokens_t tokens(s, delim);
 
     return tokens;
 }
