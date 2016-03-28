@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
+#include <boost/tokenizer.hpp>
 #include <iostream>
 #include "general.hpp"
 
@@ -16,8 +17,30 @@ bool gen::is_integer(const std::string &s)
     return true;
 }
 
+gen::tokens_t gen::split_string(const std::string &s, const std::string &c)
+{
+    using boost::escaped_list_separator;
+    using gen::tokens_t;
+    using std::vector;
+    using std::string;
+
+    /* No escape character, nor quote character is used. */
+    escaped_list_separator<char> delim("", c, "");
+    tokens_t tokens(s, delim);
+
+    return tokens;
+}
+
 bool gen::valid_addr(const std::string &addr)
 {
+    /*
+     * Only checks if addr is in an ipv4/6 address.
+     * Addresses such as irc.domain.tld and localhost
+     * are invalid here.
+     */
+    boost::system::error_code ec;
+    boost::asio::ip::address::from_string(addr, ec);
+
     /*
      * As per RFC 1035:
      * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
@@ -28,21 +51,17 @@ bool gen::valid_addr(const std::string &addr)
         return false;
     }
 
-    /*
-     * Only checks if addr is in an ipv4/6 address.
-     * Addresses such as irc.domain.tld and localhost
-     * are invalid here.
-     */
-    boost::system::error_code ec;
-    boost::asio::ip::address::from_string(addr, ec);
-
-    /*
-     * If they exist, split the domain at '.',
-     * and check every part.
-     */
-
     if (ec) {
-        cout << "[f] not a ipv4/6 address" << endl;
+
+        /* Check if all domains in the hostname are valid. */
+        tokens_t tokens = split_string(addr, ".");
+
+        for (auto &s: tokens) {
+            cout << s << endl;
+        }
+
+        cout << endl;
+        exit(0);
 
         /*
          * A domain may not start with a hyphen,
