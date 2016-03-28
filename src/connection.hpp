@@ -92,7 +92,7 @@ private:
     read_handler_t ext_read_handler_;
 
     /* Keeping the connection alive. */
-    ping_t ping_handler = std::bind(&connection::ping, this);
+    ping_t ping_handler_ = std::bind(&connection::ping, this);
     bool   do_ping = true;
 
     /* Only called by the overloaded function, thus private. */

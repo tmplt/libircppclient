@@ -3,8 +3,6 @@
 #include "general.hpp"
 #include <thread>
 
-using boost::asio::ip::tcp;
-
 namespace irc {
 
 void connection::connect(const std::string &addr, std::string &port, const bool ssl)
@@ -35,6 +33,8 @@ void connection::connect(const std::string &addr, std::string &port, const bool 
 
 void connection::connect()
 {
+    using boost::asio::ip::tcp;
+
     /*
      * Resolve the host and generate a list of endpoints.
      * An endpoint is the information used to connect to an address.
@@ -65,16 +65,18 @@ void connection::connect()
 
 void connection::run()
 {
-    std::thread ping_handler_thread(ping_handler);
+    using namespace boost;
+
+    std::thread ping_handler_thread(ping_handler_);
 
     /*
      * Start an asynchronous read thread going through connection::read().
      * Pass the arguments (this, _1, _2) to the handler.
      */
-    socket_.async_read_some(boost::asio::buffer(buffer_),
-        boost::bind(&connection::read,
-            this, boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred()));
+    socket_.async_read_some(asio::buffer(buffer_),
+        bind(&connection::read,
+            this, asio::placeholders::error,
+            asio::placeholders::bytes_transferred()));
 
     io_service_.run();
 
@@ -118,6 +120,8 @@ void connection::write(const std::string &content)
 
 void connection::read(const boost::system::error_code &error, std::size_t length)
 {
+    using namespace boost;
+
     if (error) {
         /* Unable to read from server. */
         throw error;
@@ -139,10 +143,10 @@ void connection::read(const boost::system::error_code &error, std::size_t length
          *
          * Pass the eventual error and the message length.
          */
-        socket_.async_read_some(boost::asio::buffer(buffer_),
-            boost::bind(&connection::read,
-                this, boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred));
+        socket_.async_read_some(asio::buffer(buffer_),
+            bind(&connection::read,
+                this, asio::placeholders::error,
+                asio::placeholders::bytes_transferred));
     }
 }
 
