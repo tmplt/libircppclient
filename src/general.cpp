@@ -62,8 +62,10 @@ void gen::valid_addr(const std::string &addr)
                 throw invalid_argument("a token is empty, does the address contain \"..\"?");
 
             /* Also as per RFC 1035. */
-            if (s.front() == '-' || s.back() ==  '-')
-                throw invalid_argument("first of last character is a hyphen; that's not allowed.");
+            if (s.front() == '-' || s.back() ==  '-') {
+                std::string reason = "first or last character in the domain \"" + s + "\" is a hyphen; that's not allowed.";
+                throw invalid_argument(reason);
+            }
 
             /*
              * Only [A-Za-z0-9] are allowed.
@@ -83,3 +85,4 @@ void gen::valid_addr(const std::string &addr)
         }
     }
 }
+
