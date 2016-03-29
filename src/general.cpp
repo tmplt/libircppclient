@@ -63,7 +63,8 @@ void gen::valid_addr(const std::string &addr)
 
             /* Also as per RFC 1035. */
             if (s.front() == '-' || s.back() ==  '-') {
-                std::string reason = "first or last character in the domain \"" + s + "\" is a hyphen; that's not allowed.";
+                std::string reason = "first or last character in the domain \"" + s + '\"'
+                                   + " is a hyphen; that's not allowed.";
                 throw invalid_argument(reason);
             }
 
