@@ -80,7 +80,8 @@ void gen::valid_addr(const std::string &addr)
                            !std::isalpha(c) &&
                            c != '-';        }) != s.end())
             {
-                std::string reason = "\"" + s + '\"' + " contains an illegal character (not a [A-Za-z0-9\\-]).";
+                std::string reason = "the domain \"" + s + '\"'
+                                   + " contains an illegal character (not a [A-Za-z0-9\\-]).";
                 throw invalid_argument(reason);
             }
         }
