@@ -1,8 +1,6 @@
-<center>libircppclient</center>
+libircppclient
 ===============================
-<center>
 [![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
-</center>
 
 A simple-to-use library for communication with IRC servers.
 
