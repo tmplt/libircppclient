@@ -1,7 +1,5 @@
 libircppclient
 ===============================
-[![Build Status](https://travis-ci.org/Tmplt/libircppclient.svg)](https://travis-ci.org/Tmplt/libircppclient)
-
 A simple-to-use library for communication with IRC servers.
 
 Currently, the current implementation within a program using this library is a `struct` containing the following:
