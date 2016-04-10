@@ -1,6 +1,7 @@
 #include "../src/libircppclient.hpp"
 #include <iostream>
 using std::cout;    using std::endl;
+using std::cerr;
 
 int main(int argc, char *argv[])
 {
@@ -22,9 +23,17 @@ int main(int argc, char *argv[])
     try {
         irc::client client(conf);
         client.start();
-    } catch (const std::exception &e) {
-        cout << "Exception thrown: " << e.what() << endl;
-    } catch (const boost::system::error_code &e) {
-        cout << "Boost error: " << e.message() << endl;
     }
+
+    catch (const std::exception &e) {
+        cerr << "Panic! " << e.what() << endl;
+        return -1;
+    }
+
+    catch (const boost::system::error_code &e) {
+        cerr << "Boost error: " << e.message() << endl;
+        return -1;
+    }
+
+    return 0;
 }
