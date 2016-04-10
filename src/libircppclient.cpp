@@ -23,11 +23,6 @@ client::client(const config &c)
     con.set_ext_read_handler([this](const std::string &content) {
         this->read_handler(content);
     });
-
-    /* For debugging */
-    add_read_handler([](const std::string &m) {
-        std::cout << m;
-    });
 }
 
 void client::initialize()

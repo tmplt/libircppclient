@@ -22,6 +22,11 @@ int main(int argc, char *argv[])
 
     try {
         irc::client client(conf);
+
+        client.add_read_handler([](const std::string &m) {
+            cout << m;
+        });
+
         client.start();
     }
 
