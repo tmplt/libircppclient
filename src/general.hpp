@@ -1,5 +1,5 @@
 #include <string>
-#include <boost/tokenizer.hpp>
+#include <vector>
 
 namespace gen {
 
@@ -12,7 +12,7 @@ bool is_integer(const std::string &s);
 void valid_addr(const std::string &url);
 
 /* Split a string into count(c) parts, return all tokens in an array. */
-typedef boost::tokenizer<boost::escaped_list_separator<char>> tokens_t;
-tokens_t split_string(const std::string &s, const std::string &c);
+typedef std::vector<std::string> tokens_t;
+tokens_t split_string(const std::string &str, const std::string &c);
 
 }

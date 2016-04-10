@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
-#include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
 #include "general.hpp"
 
 bool gen::is_integer(const std::string &s)
@@ -14,11 +15,10 @@ bool gen::is_integer(const std::string &s)
     return true;
 }
 
-gen::tokens_t gen::split_string(const std::string &s, const std::string &c)
+gen::tokens_t gen::split_string(const std::string &str, const std::string &c)
 {
-    /* No escape character, nor quote character is used. */
-    boost::escaped_list_separator<char> delim("", c, "");
-    gen::tokens_t tokens(s, delim);
+    gen::tokens_t tokens;
+    boost::split(tokens, str, boost::is_any_of(c));
 
     return tokens;
 }
