@@ -23,9 +23,9 @@ gen::tokens_t gen::split_string(const std::string &str, const std::string &c)
     return tokens;
 }
 
-void gen::valid_addr(const std::string &addr)
+std::string gen::valid_addr(const std::string &addr)
 {
-    using std::invalid_argument;
+    using std::string;;
 
     /*
      * Only checks if addr is in an ipv4/6 address.
@@ -35,15 +35,15 @@ void gen::valid_addr(const std::string &addr)
     boost::system::error_code ec;
     boost::asio::ip::address::from_string(addr, ec);
 
-    /*
-     * As per RFC 1035:
-     * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
-     * '.' are counted, also.
-     */
-    if (addr.length() > 255)
-        throw invalid_argument("the address is too long; it's illegal to exceed 255 characters.");
-
     if (ec) {
+
+        /*
+         * As per RFC 1035:
+         * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
+         * '.' are counted, also.
+         */
+        if (addr.length() > 255)
+            return "the address is too long; it's illegal to exceed 255 characters.";
 
         /*
          * Split the hostname into multiple domains
@@ -59,13 +59,12 @@ void gen::valid_addr(const std::string &addr)
              * would be empty.
              */
             if (s.empty())
-                throw invalid_argument("a token is empty, does the address contain \"..\"?");
+                return "a token is empty; does the address contain \"..\"?";
 
             /* Also as per RFC 1035. */
             if (s.front() == '-' || s.back() ==  '-') {
-                std::string reason = "first or last character in the domain \"" + s + '\"'
-                                   + " is a hyphen; that's not allowed.";
-                throw invalid_argument(reason);
+                return  "first or last character in the domain \"" + s + '\"'
+                        + " is a hyphen; that's not allowed.";
             }
 
             /*
@@ -78,13 +77,14 @@ void gen::valid_addr(const std::string &addr)
                 [](char c) {
                     return !std::isdigit(c) &&
                            !std::isalpha(c) &&
-                           c != '-';        }) != s.end())
-            {
-                std::string reason = "the domain \"" + s + '\"'
-                                   + " contains an illegal character (not a [A-Za-z0-9\\-]).";
-                throw invalid_argument(reason);
+                           c != '-';        }) != s.end()) {
+
+                return "the domain \"" + s + '\"'
+                       + " contains an illegal character (not a [A-Za-z0-9\\-]).";
             }
         }
     }
+
+    return "";
 }
 

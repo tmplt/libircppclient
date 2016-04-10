@@ -7,9 +7,10 @@ bool is_integer(const std::string &s);
 
 /*
  * Hostname, ipv4, or ipv6.
- * Throws std::invalid_argument.
+ * Returns an empty string on success,
+ * non-empty on failure.
  */
-void valid_addr(const std::string &url);
+std::string valid_addr(const std::string &addr);
 
 /* Split a string into count(c) parts, return all tokens in an array. */
 typedef std::vector<std::string> tokens_t;

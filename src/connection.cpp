@@ -7,22 +7,26 @@ namespace irc {
 
 void connection::connect(const std::string &addr, std::string &port, const bool ssl)
 {
+    using std::invalid_argument;
+
     if (addr.empty())
-        throw std::invalid_argument("adress is empty.");
+        throw invalid_argument("The adress is empty.");
 
-    else try {
-            gen::valid_addr(addr);
-        }
-         catch (std::invalid_argument &e) {
-             std::string s = "invalid address, reason: ";
-             s += e.what();
-             throw std::invalid_argument(s);
-        }
+    else {
+        std::string ret = gen::valid_addr(addr);
 
-    if (port.empty()) {
+        if (!ret.empty()) {
+            std::string reason = "Invalid address, reason: " + ret;
+            throw invalid_argument(reason);
+        }
+    }
+
+    if (port.empty())
         port = (ssl ? "6697" : "6667");
-    } else if (!gen::is_integer(port))
-        throw std::invalid_argument("port is a non-integer");
+
+    else if (!gen::is_integer(port))
+        throw invalid_argument("The port contains one or more non-integer.");
+
     else {
         addr_ = addr;
         port_ = port;
