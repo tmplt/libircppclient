@@ -57,7 +57,9 @@ void client::who(const std::string &query, const bool operators)
             con.write("WHO o");
         else
             con.write("WHO");
-    } else {
+    }
+
+    else {
         if (operators)
             con.write("WHO " + query + " o");
         else
@@ -84,6 +86,7 @@ void client::whowas(const std::string &nick, const std::string &count, const std
 
     if (count.empty() && server.empty())
         con.write("WHOWAS " + nick);
+
     else {
         if (server.empty())
             con.write("WHOWAS " + nick + ' ' + count);
@@ -96,7 +99,6 @@ void client::oper(const std::string &nick, const std::string &pass)
 {
     if (nick.empty() || pass.empty())
         throw std::invalid_argument("nick or pass empty");
-
     else
         con.write("OPER " + nick + ' ' + pass);
 }
@@ -108,6 +110,7 @@ void client::quit(const std::string &message)
     else
         con.write("QUIT :" + message);
 
+    /* Currently broken. */
     stop();
 }
 

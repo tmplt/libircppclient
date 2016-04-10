@@ -126,10 +126,11 @@ void connection::read(const boost::system::error_code &error, std::size_t length
 {
     using namespace boost;
 
-    if (error) {
+    if (error)
         /* Unable to read from server. */
         throw error;
-    } else {
+
+    else {
 
         /*
          * Works in synergy with socket::async_read_some().

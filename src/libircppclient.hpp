@@ -79,8 +79,7 @@ public:
     void invite(const std::string &nick, const std::string &chan);
 
     /* Kick nickname(s) from channel(s) with an optional comment. */
-    void kick(const std::string &chan, const std::string &id,
-              const std::string &comment = "");
+    void kick(const std::string &chan, const std::string &id, const std::string &comment = "");
 
 // Sending messages:
 
