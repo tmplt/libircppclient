@@ -20,7 +20,7 @@ struct config {
         server_pw = "";
 
     /* Support not yet implemented */
-    bool ssl  = false;
+    bool ssl = false;
 };
 ```
 
