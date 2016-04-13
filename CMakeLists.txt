@@ -33,6 +33,9 @@ set(Boost_USE_MULTITHREADED  ON)
 
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
+
+set(LINK_LIBS libircppclient ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${OPENSSL_LIBRARIES})
 
 # Include CMakeLists.txt from src/ and tests/
 add_subdirectory(src)
