@@ -66,6 +66,14 @@ Dependencies
 * Boost.asio (tested with >= 1.59.0)
 * A compiler with C++14 support, such as Clang or GCC
 
+Compilation
+-----------
+```bash
+$ mkdir build && cd build/
+$ cmake ..
+$ make
+```
+
 Thanks to:
 ----------
 - [@muriloadriano](https://github.com/muriloadriano) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot) -- Boost.asio-based IRC bot under the MIT license.
