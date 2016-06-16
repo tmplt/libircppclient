@@ -8,23 +8,23 @@ Currently, the current implementation within a program using this library is a `
 struct config {
     /* Default values. */
     std::string
-        address = "",
-        port    = "6667",
+        address = "irc.example.tld",
+        port    = "6697",
         nick    = "Temeraire",
         user    = "Laurence",
 
     /* Optional */
 
         /* For identification with NickServ */
-        nick_pw   = "",
+        nick_pw   = "ech!",
         server_pw = "";
 
     /* Support not yet implemented */
-    bool ssl  = false;
+    bool ssl  = true;
 };
 ```
 
-which is simply passed as an argument to `irc::client()` as seen in `simple.cpp`:
+which is simply passed as an argument to `irc::client()` as seen in `tests/simple.cpp`:
 
 ```cpp
 irc::config conf;
@@ -64,8 +64,9 @@ Dependencies
 ------------
 * CMake 3.0
 * Boost.asio (tested with >= 1.59.0)
-* A compiler with C++14 support, such as Clang or GCC
+* A compiler with C++11 support, such as Clang or GCC
 
 Thanks to:
 ----------
-- [@muriloadriano](https://github.com/muriloadriano) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot) -- Boost.asio-based IRC bot under the MIT license.
+- [@muriloadriano](https://github.com/muriloadriano) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot) — Boost.asio-based IRC bot under the MIT license.
+- [@jrosdahl](https://github.com/jrosdahl) for [miniircd](https://github.com/jrosdahl/miniircd) — A (very) simple IRC server, which prints server events in its raw form.

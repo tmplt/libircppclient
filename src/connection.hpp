@@ -84,8 +84,8 @@ public:
 
 protected:
     /* Server information. */
-    std::string addr_;
-    std::string port_;
+    std::string addr_ = "";
+    std::string port_ = "";
 
     /*
      * All received data that passed this class'

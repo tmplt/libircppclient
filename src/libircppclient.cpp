@@ -22,7 +22,7 @@ client::client(const config &conf)
     std::string ret = validate(conf);
 
     if (!ret.empty())
-        throw std::invalid_argument("Config error: ");
+        throw std::invalid_argument("Config error: " + ret);
 
     con.set_addr(conf.address);
     con.set_port(conf.port);
@@ -56,7 +56,7 @@ std::string client::validate(const config &c)
     /* Port handling. */
 
     if (c.port.empty())
-        return "port is empty..";
+        return "port is empty.";
 
     else if (!gen::is_integer(c.port))
         return "port contains one of more non-integers.";
