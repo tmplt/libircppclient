@@ -6,7 +6,7 @@ using std::cerr;
 int main(int argc, char *argv[])
 {
     if (argc < 2) {
-        cout << "[Error] at least an address argument is required" << endl;
+        cout << "Usage: simple <host> [<port>]" << endl;
         return 1;
     }
 

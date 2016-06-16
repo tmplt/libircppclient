@@ -18,15 +18,11 @@ public:
     /* "Bind" used socket to the io_service. */
     connection() : socket_(io_service_) { }
 
-     /*
-     * Check if given arguments are valid, then attempt to connect to the
-     * server. Throw an error if unsuccessful or if the data is invalid.
-     */
-    void connect(const std::string &addr, std::string &port, const bool ssl);
-
     /* io_service, and the loop itself; not the connection itself. */
     void run();
     void stop();
+
+    void connect();
 
     /*
      * Asynchronously loop this function and push any read data to
@@ -76,14 +72,20 @@ public:
         return socket_.is_open();
     }
 
-private:
+    void set_addr(const std::string &addr)
+    {
+        addr_ = addr;
+    }
+
+    void set_port(const std::string &port)
+    {
+        port_ = port;
+    }
+
+protected:
     /* Server information. */
     std::string addr_;
     std::string port_;
-
-    /* Required by any program using boost::asio. */
-    boost::asio::io_service io_service_;
-    boost::asio::ip::tcp::socket socket_;
 
     /*
      * All received data that passed this class'
@@ -94,9 +96,6 @@ private:
     /* Keeping the connection alive. */
     ping_t ping_handler_ = std::bind(&connection::ping, this);
     bool   do_ping = true;
-
-    /* Only called by the overloaded function, thus private. */
-    void connect();
 
     /*
      * 512B is the max message length within the IRC protocol.
@@ -110,6 +109,12 @@ private:
      * Might change this at a later date, given how IRCv3 seems to work.
      */
     std::array<char, 512> buffer_;
+
+    boost::asio::io_service io_service_;
+
+private:
+    /* Required by any program using boost::asio. */
+    boost::asio::ip::tcp::socket socket_;
 };
 
 /* ns irc */

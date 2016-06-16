@@ -3,37 +3,10 @@
 #include "general.hpp"
 #include <thread>
 
+#include <iostream>
+using std::cout;
+
 namespace irc {
-
-void connection::connect(const std::string &addr, std::string &port, const bool ssl)
-{
-    using std::invalid_argument;
-
-    if (addr.empty())
-        throw invalid_argument("The adress is empty.");
-
-    else {
-        std::string ret = gen::valid_addr(addr);
-
-        if (!ret.empty()) {
-            std::string reason = "Invalid address, reason: " + ret;
-            throw invalid_argument(reason);
-        }
-    }
-
-    if (port.empty())
-        port = (ssl ? "6697" : "6667");
-
-    else if (!gen::is_integer(port))
-        throw invalid_argument("The port contains one or more non-integer.");
-
-    else {
-        addr_ = addr;
-        port_ = port;
-
-        connect();
-    }
-}
 
 void connection::connect()
 {
@@ -119,6 +92,7 @@ void connection::write(const std::string &content)
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
+    cout << "[debug] writing --> " << content << "\r\n";
     boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
 }
 

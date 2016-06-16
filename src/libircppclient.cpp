@@ -1,6 +1,9 @@
 #include "libircppclient.hpp"
+#include "general.hpp"
+#include <string>
 #include <iostream>
 #include <thread>
+#include <stdexcept>
 
 /*
  * FIFO:
@@ -13,16 +16,52 @@
 
 namespace irc {
 
-client::client(const config &c)
-    : conf_(c)
+client::client(const config &conf)
+    : conf_(conf)
 {
+    std::string ret = validate(conf);
+
+    if (!ret.empty())
+        throw std::invalid_argument("Config error: ");
+
+    con.set_addr(conf.address);
+    con.set_port(conf.port);
+
     /*
      * "Bind" the external read handlers from connection to
-     * read_handler() here.
+     * read_handler() here. Otherwise, you'd need to fiddle
+     * with connection.hpp inclusion.
      */
     con.set_ext_read_handler([this](const std::string &content) {
         this->read_handler(content);
     });
+}
+
+std::string client::validate(const config &c)
+{
+    using std::string;
+
+    /* Address handling. */
+
+    if (c.address.empty())
+        return "the address is empty.";
+
+    else {
+        string ret = gen::valid_addr(c.address);
+
+        if (!ret.empty())
+            return "invalid address, reason: " + ret;
+    }
+
+    /* Port handling. */
+
+    if (c.port.empty())
+        return "port is empty..";
+
+    else if (!gen::is_integer(c.port))
+        return "port contains one of more non-integers.";
+
+    return "";
 }
 
 void client::initialize()
@@ -33,7 +72,7 @@ void client::initialize()
 
 void client::start()
 {
-    con.connect(conf_.address, conf_.port, conf_.ssl);
+    con.connect();
     initialize();
     con.run();
 }
