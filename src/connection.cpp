@@ -19,22 +19,16 @@ void connection::connect()
      */
     tcp::resolver r(io_service_);
     tcp::resolver::query query(addr_, port_);
-    tcp::resolver::iterator endpt_it = r.resolve(query);
 
-    /* Denotes the end of the list of generated endpoints. */
-    decltype(endpt_it) end;
-
-    /* Default error. */
+    /* default error. */
     boost::system::error_code error = boost::asio::error::host_not_found;
 
-    /* Iterate until we've reached the end of the list. */
-    while (endpt_it != end) {
-        if (!error)
-            break;
-
-        socket_.close();
-        socket_.connect(*endpt_it++, error);
-    }
+    /*
+     * Let boost handle the endpoint iteration, and connect
+     * to a valid endpoint. Set `error` non-zero if something
+     * has gone wrong.
+     */
+    boost::asio::connect(socket_, r.resolve(query), error);
 
     if (error)
         throw error;
@@ -75,8 +69,6 @@ void connection::ping()
          */
         std::this_thread::sleep_for(1min + 30s);
 
-        /* For debugging */
-        std::cout << "[info] Pinging " << addr_ << '.' << std::endl;
         write("PING " + addr_);
     }
 }

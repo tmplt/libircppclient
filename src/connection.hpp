@@ -115,6 +115,9 @@ protected:
 private:
     /* Required by any program using boost::asio. */
     boost::asio::ip::tcp::socket socket_;
+
+    /* Only called by the overloaded function, thus private. */
+    void ssl_connect();
 };
 
 /* ns irc */

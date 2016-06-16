@@ -22,8 +22,8 @@ struct config {
         nick_pw   = "",
         server_pw = "";
 
-    /* Support not yet implemented */
     bool ssl = false;
 };
 
 }
+

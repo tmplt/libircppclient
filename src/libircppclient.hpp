@@ -1,5 +1,6 @@
 #pragma once
 #include "connection.hpp"
+//#include "ssl_connection.hpp"
 #include "config.hpp"
 #include <vector>
 
@@ -9,7 +10,7 @@ class client {
 public:
     client(const config &c);
 
-    /* Check if config date is valid, if not return non-empty. */
+    /* Check if config date is valid, if not return false. */
     std::string validate(const config &c);
 
     void start();
