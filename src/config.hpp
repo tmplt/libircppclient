@@ -6,9 +6,10 @@ namespace irc {
 /*
  * It really feels like this isn't the quick-n-simple implementation
  * we're looking for.
+ *
+ * Contains default values.
  */
 struct config {
-    /* Default values. */
     std::string
         address = "",
         port    = "6667",

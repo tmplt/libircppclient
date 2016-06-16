@@ -23,6 +23,7 @@ public:
      * the channel prefix [#|&|...] must be included.
      */
 
+// RFC commands
 // Connection registration:
 
     /*

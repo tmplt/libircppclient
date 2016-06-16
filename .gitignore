@@ -46,3 +46,6 @@ build/
 
 # I'm way too lazy to configure a separate project for tests
 tests/unit_*
+
+# Vim session files
+*.vim

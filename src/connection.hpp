@@ -10,7 +10,7 @@ namespace irc {
 /* Handles data received from the server. */
 typedef std::function<void (const std::string &content)> read_handler_t;
 
-/* Only used to keep the connection alive. */
+/* Used to keep the connection alive. */
 typedef std::function<void (void)> ping_t;
 
 class connection {

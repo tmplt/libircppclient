@@ -1,3 +1,9 @@
+/*
+ * A simple client utitlizing libircppclient which
+ * simply connects to a server, maintains the connection,
+ * and prints everything received in its raw form.
+ */
+
 #include "../src/libircppclient.hpp"
 #include <iostream>
 using std::cout;    using std::endl;
