@@ -2,9 +2,7 @@
 #include <boost/thread.hpp>
 #include "general.hpp"
 #include <thread>
-
-#include <iostream>
-using std::cout;
+#include <string>
 
 namespace irc {
 
@@ -22,9 +20,26 @@ connection::connection(const bool use_ssl)
     }
 }
 
+/*
+ * error_code would here imply that a fail is expected, but
+ * it is not; it could be aliased, but that would only make
+ * matters worse, I believe.
+ */
+error_code connection::try_handshake()
+{
+    error_code ret;
+
+    ssl_socket_.set_verify_mode(ssl::verify_peer);
+    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_));
+    ssl_socket_.handshake(ssl_socket::client, ret);
+
+    return ret;
+}
+
 void connection::connect()
 {
     using boost::asio::ip::tcp;
+    using boost::asio::connect;
 
     /*
      * Resolve the host and generate a list of endpoints.
@@ -35,20 +50,29 @@ void connection::connect()
     tcp::resolver::query query(addr_, port_);
 
     /* default error. */
-    boost::system::error_code error = boost::asio::error::host_not_found;
+    error_code error = boost::asio::error::host_not_found;
 
-    /*
-     * Let boost handle the endpoint iteration, and connect
-     * to a valid endpoint. Set `error` non-zero if something
-     * has gone wrong.
-     */
-    boost::asio::connect(socket_, r.resolve(query), error);
+    if (use_ssl_) {
+        connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
+
+        if (!error) {
+            /*
+             * While not expected, one _could_ arise.
+             * (naming is hard)
+             */
+            error = try_handshake();
+        }
+    }
+
+    else
+        connect(socket_, r.resolve(query), error);
 
     if (error)
         throw error;
 }
 
-void connection::run()
+template<class S>
+void connection::run(S &socket)
 {
     using namespace boost;
 
@@ -58,8 +82,8 @@ void connection::run()
      * Start an asynchronous read thread going through connection::read().
      * Pass the arguments (this, _1, _2) to the handler.
      */
-    socket_.async_read_some(asio::buffer(buffer_),
-        bind(&connection::read,
+    socket.async_read_some(asio::buffer(buffer_),
+        bind(&connection::read(socket),
             this, asio::placeholders::error,
             asio::placeholders::bytes_transferred()));
 
@@ -92,16 +116,24 @@ void connection::pong()
     write("PONG :" + addr_);
 }
 
-void connection::write(const std::string &content)
+template<class S>
+void connection::write(T &socket, std::string &content)
 {
     /*
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
-    boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
+    content.append("\r\n");
+
+    error_code error;
+    boost::asio::write(socket, boost::asio::buffer(content), error);
+
+    if (error)
+        throw error;
 }
 
-void connection::read(const boost::system::error_code &error, std::size_t length)
+template<class S>
+void connection::read(S &socket, const error_code &error, std::size_t length)
 {
     using namespace boost;
 
@@ -127,8 +159,8 @@ void connection::read(const boost::system::error_code &error, std::size_t length
          *
          * Pass the eventual error and the message length.
          */
-        socket_.async_read_some(asio::buffer(buffer_),
-            bind(&connection::read,
+        socket.async_read_some(asio::buffer(buffer_),
+            bind(&connection::read(socket),
                 this, asio::placeholders::error,
                 asio::placeholders::bytes_transferred));
     }
@@ -147,9 +179,10 @@ void connection::read_handler(const std::string &content)
         ext_read_handler_(content);
 }
 
-void connection::stop()
+template<class S>
+void connection::stop(S &socket)
 {
-    socket_.close();
+    socket.close();
     io_service_.stop();
 }
 

@@ -8,13 +8,14 @@ using boost::asio::ip::tcp;
 
 namespace irc {
 
-/* Handles data received from the server. */
-typedef std::function<void (const std::string &content)> read_handler_t;
-
-/* Used to keep the connection alive. */
+/* A seperate thread which pings. */
 typedef std::function<void (void)> ping_t;
 
+/* A seperate thread which reads. */
+typedef std::function<void (const std::string &content)> read_handler_t;
+
 using     boost::asio::ip::tcp;
+using     boost::system::error_code;
 namespace ssl = boost::asio::ssl;
 typedef   ssl::stream<tcp::socket> ssl_socket;
 
@@ -22,28 +23,32 @@ class connection {
 public:
     connection(const bool use_ssl);
 
-    /* The io_service_, and the loop itself; not the connection itself. */
+    void connect();
+    error_code try_handshake();
+
     void run();
     void stop();
 
-    void connect();
-
     /*
-     * Asynchronously loop this function and push any read data to
-     * read_handler()...
+     * Asynchronosouly looping. This function pushes any read data
+     * to read_handler().
      */
     void read(const boost::system::error_code &error, std::size_t length);
 
-    /* Only handles connection-specific requests, e.g., PING */
+    /*
+     * Handles RFC-specific requests, e.g. PING, VERSION, etc.
+     * Everything else is passed onto the external read handler,
+     * which resides in libircppclient.cpp.
+     */
     void read_handler(const std::string &content);
 
-    /* ... but write synchronously. */
-    void write(const std::string &content);
+    /* CR-LF is appended */
+    void write(std::string &content);
 
     /*
      * "Binds" the external read handler, which handles everything
-     * this class' read_handler() do not. Bound function may
-     * exist in any class.
+     * this class' read_handler() do not. Bound function
+     * resides within libircppclient.cpp.
      */
     void set_ext_read_handler(const read_handler_t &handler)
     {
@@ -53,18 +58,17 @@ public:
     /*
      * So that we do not get kicked from the server, and so that the
      * server itself does not have to ping us, which seems preferable
-     * in the IRC specification.
+     * according to the RFC.
      *
      * In a perfect implementation, this should only be used when no
-     * command has been sent to the server for a specified amount of time.
-     * Currently, the implementation does not adhere to this.
+     * command has been sent to the server for a specified amount of time
+     * (as the RFC explains), but boy are timers tricky!
      */
     void ping();
 
     /* Fail-safe for ping(). */
     void pong();
 
-    /* For a graceful shutdown. */
     void stop_ping()
     {
         do_ping = false;
@@ -91,13 +95,8 @@ private:
     std::string addr_ = "";
     std::string port_ = "";
 
-    /*
-     * All received data that passed this class'
-     * read_handler() goes through this object.
-     */
     read_handler_t ext_read_handler_;
 
-    /* Keeping the connection alive. */
     ping_t ping_handler_ = std::bind(&connection::ping, this);
     bool   do_ping = true;
 
