@@ -17,7 +17,7 @@
 namespace irc {
 
 client::client(const config &conf)
-    : conf_(conf)
+    : conf_(conf), con_(conf_.ssl)
 {
     std::string ret = validate(conf);
 

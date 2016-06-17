@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <functional>
 #include <string>
 
@@ -13,12 +14,15 @@ typedef std::function<void (const std::string &content)> read_handler_t;
 /* Used to keep the connection alive. */
 typedef std::function<void (void)> ping_t;
 
+using     boost::asio::ip::tcp;
+namespace ssl = boost::asio::ssl;
+typedef   ssl::stream<tcp::socket> ssl_socket;
+
 class connection {
 public:
-    /* "Bind" used socket to the io_service. */
-    connection() : socket_(io_service_) { }
+    connection(const bool use_ssl);
 
-    /* io_service, and the loop itself; not the connection itself. */
+    /* The io_service_, and the loop itself; not the connection itself. */
     void run();
     void stop();
 
@@ -82,7 +86,7 @@ public:
         port_ = port;
     }
 
-protected:
+private:
     /* Server information. */
     std::string addr_ = "";
     std::string port_ = "";
@@ -112,13 +116,12 @@ protected:
 
     boost::asio::io_service io_service_;
 
-private:
-    /* Required by any program using boost::asio. */
-    boost::asio::ip::tcp::socket socket_;
-
-    /* Only called by the overloaded function, thus private. */
-    void ssl_connect();
+    bool         use_ssl_;
+    tcp::socket  socket_;
+    ssl::context ctx_;
+    ssl_socket   ssl_socket_;
 };
 
 /* ns irc */
 }
+
