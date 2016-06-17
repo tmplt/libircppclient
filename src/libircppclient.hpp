@@ -134,7 +134,7 @@ protected:
     void read_handler(const std::string &content);
     std::vector<read_handler_t> read_handlers_;
 
-    connection con;
+    connection con_;
 
 private:
     void initialize();

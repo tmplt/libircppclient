@@ -24,15 +24,15 @@ client::client(const config &conf)
     if (!ret.empty())
         throw std::invalid_argument("Config error: " + ret);
 
-    con.set_addr(conf.address);
-    con.set_port(conf.port);
+    con_.set_addr(conf.address);
+    con_.set_port(conf.port);
 
     /*
      * "Bind" the external read handlers from connection to
      * read_handler() here. Otherwise, you'd need to fiddle
      * with connection.hpp inclusion.
      */
-    con.set_ext_read_handler([this](const std::string &content) {
+    con_.set_ext_read_handler([this](const std::string &content) {
         this->read_handler(content);
     });
 }
@@ -66,16 +66,15 @@ std::string client::validate(const config &c)
 
 void client::initialize()
 {
-    con.write("NICK " + conf_.nick);
-    con.write("USER " + conf_.user + " 0 * :" + conf_.user);
+    con_.write("NICK " + conf_.nick);
+    con_.write("USER " + conf_.user + " 0 * :" + conf_.user);
 }
 
 void client::start()
 {
-    //con.connect(conf_.address, conf_.port, conf_.ssl);
-    con.connect();
+    con_.connect();
     initialize();
-    con.run();
+    con_.run();
 }
 
 void client::stop()
@@ -84,8 +83,8 @@ void client::stop()
      * Haven't I forgotten something?
      * Some async function that needs terminating, maybe?
      */
-    con.stop_ping();
-    con.stop();
+    con_.stop_ping();
+    con_.stop();
 }
 
 void client::read_handler(const std::string &content)
@@ -109,7 +108,7 @@ void client::raw_cmd(const std::string &content)
     if (content.empty())
         throw std::invalid_argument("content is empty.");
 
-    con.write(content);
+    con_.write(content);
 }
 
 /* ns irc */
