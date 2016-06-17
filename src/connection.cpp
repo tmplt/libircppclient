@@ -98,7 +98,6 @@ void connection::write(const std::string &content)
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
-    cout << "[debug] writing --> " << content << "\r\n";
     boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
 }
 
