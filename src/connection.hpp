@@ -9,25 +9,63 @@ using boost::asio::ip::tcp;
 namespace irc {
 
 /* A seperate thread which pings. */
-typedef std::function<void (void)> ping_t;
+typedef std::function<void (void)> ping_th;
 
-/* A seperate thread which reads. */
+/* A type which takes a lambda as argument.. */
 typedef std::function<void (const std::string &content)> read_handler_t;
 
 using     boost::asio::ip::tcp;
 using     boost::system::error_code;
+using     boost::asio::buffered_stream;
 namespace ssl = boost::asio::ssl;
-typedef   ssl::stream<tcp::socket> ssl_socket;
+
+typedef   ssl::stream<tcp::socket>     ssl_socket;
+typedef   buffered_stream<tcp::socket> nossl_socket;
 
 class connection {
 public:
     connection(const bool use_ssl);
 
     void connect();
-    error_code try_handshake();
 
     void run();
     void stop();
+
+    /* CR-LF is appended */
+    void write(std::string content);
+
+    /*
+     * "Binds" the external read handler, which handles everything
+     * this class' read_handler() do not. Bound function
+     * resides within libircppclient.cpp.
+     */
+    void set_ext_read_handler(const read_handler_t &handler)
+    {
+        ext_read_handler_ = handler;
+    }
+
+    /* Is the connection still alive? */
+    bool is_alive() const
+    {
+        return socket_.lowest_layer().is_open();
+    }
+
+    void set_addr(const std::string &addr)
+    {
+        addr_ = addr;
+    }
+
+    void set_port(const std::string &port)
+    {
+        port_ = port;
+    }
+
+    void stop_ping()
+    {
+        do_ping = false;
+    }
+
+private:
 
     /*
      * Asynchronosouly looping. This function pushes any read data
@@ -41,19 +79,6 @@ public:
      * which resides in libircppclient.cpp.
      */
     void read_handler(const std::string &content);
-
-    /* CR-LF is appended */
-    void write(std::string &content);
-
-    /*
-     * "Binds" the external read handler, which handles everything
-     * this class' read_handler() do not. Bound function
-     * resides within libircppclient.cpp.
-     */
-    void set_ext_read_handler(const read_handler_t &handler)
-    {
-        ext_read_handler_ = handler;
-    }
 
     /*
      * So that we do not get kicked from the server, and so that the
@@ -69,36 +94,18 @@ public:
     /* Fail-safe for ping(). */
     void pong();
 
-    void stop_ping()
-    {
-        do_ping = false;
-    }
+    /* For SSL connections. */
+    error_code try_handshake();
 
-    /* Is the connection still alive? */
-    bool is_alive() const
-    {
-        return socket_.is_open();
-    }
-
-    void set_addr(const std::string &addr)
-    {
-        addr_ = addr;
-    }
-
-    void set_port(const std::string &port)
-    {
-        port_ = port;
-    }
-
-private:
     /* Server information. */
     std::string addr_ = "";
     std::string port_ = "";
 
     read_handler_t ext_read_handler_;
 
-    ping_t ping_handler_ = std::bind(&connection::ping, this);
-    bool   do_ping = true;
+    /* The library's life line. */
+    ping_th ping_handler_ = std::bind(&connection::ping, this);
+    bool    do_ping = true;
 
     /*
      * 512B is the max message length within the IRC protocol.
@@ -111,14 +118,18 @@ private:
      *
      * Might change this at a later date, given how IRCv3 seems to work.
      */
-    std::array<char, 512> buffer_;
+    std::array<char, 512> read_buffer_;
 
     boost::asio::io_service io_service_;
 
     bool         use_ssl_;
-    tcp::socket  socket_;
+    nossl_socket socket_;
     ssl::context ctx_;
     ssl_socket   ssl_socket_;
+
+    /* For both ssl and non-ssl. */
+    template<class S>
+    void async_read_some(S &socket);
 };
 
 /* ns irc */

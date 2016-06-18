@@ -1,10 +1,6 @@
-set(SOURCE_FILES
-    connection.cpp
-    connection.hpp
-    general.cpp
-    general.hpp
-    libircppclient.cpp
-    libircppclient.hpp
-    commands.cpp)
+file(GLOB SOURCE_FILES
+    "*.hpp"
+    "*.cpp"
+)
 
 add_library(libircppclient ${SOURCE_FILES})

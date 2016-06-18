@@ -1,6 +1,5 @@
 #pragma once
 #include "connection.hpp"
-//#include "ssl_connection.hpp"
 #include "config.hpp"
 #include <vector>
 
@@ -124,7 +123,7 @@ public:
      */
     void raw_cmd(const std::string &content);
 
-protected:
+private:
     config conf_;
 
     /*
@@ -136,7 +135,6 @@ protected:
 
     connection con_;
 
-private:
     void initialize();
 };
 

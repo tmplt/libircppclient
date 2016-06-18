@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(libircppclient VERSION 0.4.1)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Get the latest abbreviated commit hash of the working branch
 execute_process(
     COMMAND git rev-parse --short HEAD

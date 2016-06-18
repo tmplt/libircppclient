@@ -1,8 +1,11 @@
-#include "connection.hpp"
-#include <boost/thread.hpp>
-#include "general.hpp"
 #include <thread>
 #include <string>
+#include <boost/bind.hpp>
+#include "connection.hpp"
+#include "general.hpp"
+
+#include <iostream>
+using std::cout;
 
 namespace irc {
 
@@ -57,7 +60,7 @@ void connection::connect()
 
         if (!error) {
             /*
-             * While not expected, one _could_ arise.
+             * While not requested, one _could_ arise.
              * (naming is hard)
              */
             error = try_handshake();
@@ -65,32 +68,43 @@ void connection::connect()
     }
 
     else
-        connect(socket_, r.resolve(query), error);
+        connect(socket_.lowest_layer(), r.resolve(query), error);
 
     if (error)
         throw error;
 }
 
 template<class S>
-void connection::run(S &socket)
+void connection::async_read_some(S &s)
 {
-    using namespace boost;
-
-    std::thread ping_handler_thread(ping_handler_);
+    using namespace boost::asio;
 
     /*
      * Start an asynchronous read thread going through connection::read().
-     * Pass the arguments (this, _1, _2) to the handler.
+     * Pass the arguments (this, [...], [...]) to the it.
      */
-    socket.async_read_some(asio::buffer(buffer_),
-        bind(&connection::read(socket),
-            this, asio::placeholders::error,
-            asio::placeholders::bytes_transferred()));
+    s.async_read_some(buffer(read_buffer_),
+        boost::bind(&connection::read,
+            this, placeholders::error,
+            placeholders::bytes_transferred()));
+}
+
+void connection::run()
+{
+    using namespace boost::asio;
+    using boost::bind;
+
+    std::thread ping_thread(ping_handler_);
+
+    if (use_ssl_)
+        async_read_some(ssl_socket_);
+    else
+        async_read_some(socket_);
 
     io_service_.run();
 
     /* Remain at this point until we do not need the connection any more. */
-    ping_handler_thread.join();
+    ping_thread.join();
 }
 
 void connection::ping()
@@ -116,9 +130,11 @@ void connection::pong()
     write("PONG :" + addr_);
 }
 
-template<class S>
-void connection::write(T &socket, std::string &content)
+void connection::write(std::string content)
 {
+    using boost::asio::write;
+    using boost::asio::buffer;
+
     /*
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
@@ -126,14 +142,18 @@ void connection::write(T &socket, std::string &content)
     content.append("\r\n");
 
     error_code error;
-    boost::asio::write(socket, boost::asio::buffer(content), error);
+    cout << "[debug] writing: " << content;
+
+    if (use_ssl_)
+        write(ssl_socket_.next_layer(), buffer(content), error);
+    else
+        write(socket_.next_layer(), buffer(content), error);
 
     if (error)
         throw error;
 }
 
-template<class S>
-void connection::read(S &socket, const error_code &error, std::size_t length)
+void connection::read(const error_code &error, std::size_t length)
 {
     using namespace boost;
 
@@ -149,7 +169,7 @@ void connection::read(S &socket, const error_code &error, std::size_t length)
          * Copy the data within the buffer and the length of it
          * and pass it to the class' read_handler.
          */
-        read_handler(std::string(buffer_.data(), length));
+        read_handler(std::string(read_buffer_.data(), length));
 
         /*
          * Start an asynchronous recursive read thread.
@@ -159,10 +179,10 @@ void connection::read(S &socket, const error_code &error, std::size_t length)
          *
          * Pass the eventual error and the message length.
          */
-        socket.async_read_some(asio::buffer(buffer_),
-            bind(&connection::read(socket),
-                this, asio::placeholders::error,
-                asio::placeholders::bytes_transferred));
+        if (use_ssl_)
+            async_read_some(ssl_socket_);
+        else
+            async_read_some(socket_);
     }
 }
 
@@ -179,10 +199,13 @@ void connection::read_handler(const std::string &content)
         ext_read_handler_(content);
 }
 
-template<class S>
-void connection::stop(S &socket)
+void connection::stop()
 {
-    socket.close();
+    if (use_ssl_)
+        ssl_socket_.lowest_layer().close();
+    else
+        socket_.lowest_layer().close();
+
     io_service_.stop();
 }
 

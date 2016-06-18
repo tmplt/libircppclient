@@ -1,4 +1,5 @@
 #include "libircppclient.hpp"
+#include <string>
 
 /*
  * Should these functions return something instead of

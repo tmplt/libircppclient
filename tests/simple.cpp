@@ -41,6 +41,9 @@ int main(int argc, char *argv[])
         conf.port = port;
     }
 
+    if (conf.ssl)
+        cout << "[debug] using SSL" << endl;
+
     conf.nick    = "libircppbot";
     conf.user    = "libircppclient";
 
