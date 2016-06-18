@@ -70,3 +70,4 @@ Thanks to:
 ----------
 - [@muriloadriano](https://github.com/muriloadriano) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot) — Boost.asio-based IRC bot under the MIT license.
 - [@jrosdahl](https://github.com/jrosdahl) for [miniircd](https://github.com/jrosdahl/miniircd) — A (very) simple IRC server, which prints server events in its raw form.
+

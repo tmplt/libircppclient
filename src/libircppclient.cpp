@@ -113,3 +113,4 @@ void client::raw_cmd(const std::string &content)
 
 /* ns irc */
 }
+

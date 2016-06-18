@@ -190,3 +190,4 @@ void client::list(const std::string &chans)
 
 /* ns irc */
 }
+

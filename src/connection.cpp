@@ -211,3 +211,4 @@ void connection::stop()
 
 /* ns irc */
 }
+

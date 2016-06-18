@@ -4,3 +4,4 @@ file(GLOB SOURCE_FILES
 )
 
 add_library(libircppclient ${SOURCE_FILES})
+
