@@ -1,7 +1,7 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/) and [ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm).
 
-## [0.4.1] - 2015-03-28
+## [0.4.1] - 2016-03-28
 ### Fixed
 - `gen::valid_addr()` now works as intended, and should now match [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt).
 
