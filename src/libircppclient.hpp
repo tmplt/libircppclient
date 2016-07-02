@@ -10,7 +10,7 @@ public:
     client(const config &c);
 
     /* Check if config date is valid, if not return non-empty. */
-    std::string validate(const config &c);
+    std::string validate_conf(const config &c);
 
     void start();
     void stop();

@@ -6,6 +6,7 @@
 
 #include <iostream>
 using std::cout;
+using std::endl;
 
 namespace irc {
 
@@ -59,9 +60,10 @@ void connection::connect()
         connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
 
         if (!error) {
+
             /*
              * While not requested, one _could_ arise.
-             * (naming is hard)
+             * Non-zero equals successful handshake.
              */
             error = try_handshake();
         }
@@ -75,7 +77,7 @@ void connection::connect()
 }
 
 template<class S>
-void connection::async_read_some(S &s)
+void connection::read_some(S &s)
 {
     using namespace boost::asio;
 
@@ -92,16 +94,20 @@ void connection::async_read_some(S &s)
 void connection::run()
 {
     using namespace boost::asio;
-    using boost::bind;
 
     std::thread ping_thread(ping_handler_);
 
     if (use_ssl_)
-        async_read_some(ssl_socket_);
+        read_some(ssl_socket_);
     else
-        async_read_some(socket_);
+        read_some(socket_);
 
-    io_service_.run();
+    error_code error;
+
+    io_service_.run(error);
+
+    if (error)
+        throw error;
 
     /* Remain at this point until we do not need the connection any more. */
     ping_thread.join();
@@ -164,7 +170,7 @@ void connection::read(const error_code &error, std::size_t length)
     else {
 
         /*
-         * Works in synergy with socket::async_read_some().
+         * Works in synergy with socket::read_some().
          *
          * Copy the data within the buffer and the length of it
          * and pass it to the class' read_handler.
@@ -180,9 +186,9 @@ void connection::read(const error_code &error, std::size_t length)
          * Pass the eventual error and the message length.
          */
         if (use_ssl_)
-            async_read_some(ssl_socket_);
+            read_some(ssl_socket_);
         else
-            async_read_some(socket_);
+            read_some(socket_);
     }
 }
 

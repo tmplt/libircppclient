@@ -14,7 +14,7 @@ std::string valid_addr(const std::string &addr);
 /* Split a string into multiple strings when a character is met.
  * Returns all tokens in an array.
  */
-typedef std::vector<std::string> tokens_t;
+using tokens_t = std::vector<std::string>;
 tokens_t split_string(const std::string &str, const std::string &ch);
 
 /* ns gen */

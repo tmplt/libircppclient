@@ -9,18 +9,18 @@ using boost::asio::ip::tcp;
 namespace irc {
 
 /* A seperate thread which pings. */
-typedef std::function<void (void)> ping_th;
+using ping_th =  std::function<void (void)>;
 
 /* A type which takes a lambda as argument.. */
-typedef std::function<void (const std::string &content)> read_handler_t;
+using read_handler_t =  std::function<void (const std::string &content)>;
 
 using     boost::asio::ip::tcp;
 using     boost::system::error_code;
 using     boost::asio::buffered_stream;
 namespace ssl = boost::asio::ssl;
 
-typedef   ssl::stream<tcp::socket>     ssl_socket;
-typedef   buffered_stream<tcp::socket> nossl_socket;
+using ssl_socket = ssl::stream<tcp::socket>;
+using nossl_socket = buffered_stream<tcp::socket>;
 
 class connection {
 public:
@@ -66,6 +66,13 @@ public:
     }
 
 private:
+
+    /*
+     * For both ssl and non-ssl, which are quite different,
+     * but share the same interface.
+     */
+    template<class S>
+    void read_some(S &socket);
 
     /*
      * Asynchronosouly looping. This function pushes any read data
@@ -126,10 +133,6 @@ private:
     nossl_socket socket_;
     ssl::context ctx_;
     ssl_socket   ssl_socket_;
-
-    /* For both ssl and non-ssl. */
-    template<class S>
-    void async_read_some(S &socket);
 };
 
 /* ns irc */

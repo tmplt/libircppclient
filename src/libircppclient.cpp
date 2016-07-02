@@ -19,10 +19,10 @@ namespace irc {
 client::client(const config &conf)
     : conf_(conf), con_(conf_.ssl)
 {
-    std::string ret = validate(conf);
+    std::string ret = validate_conf(conf);
 
     if (!ret.empty())
-        throw std::invalid_argument("Config error: " + ret);
+        throw std::invalid_argument("Configuration error: " + ret);
 
     con_.set_addr(conf.address);
     con_.set_port(conf.port);
@@ -37,11 +37,11 @@ client::client(const config &conf)
     });
 }
 
-std::string client::validate(const config &c)
+std::string client::validate_conf(const config &c)
 {
     using std::string;
 
-    /* Address handling. */
+    /* Address checking. */
 
     if (c.address.empty())
         return "the address is empty.";
@@ -53,7 +53,7 @@ std::string client::validate(const config &c)
             return "invalid address, reason: " + ret;
     }
 
-    /* Port handling. */
+    /* Port checking. */
 
     if (c.port.empty())
         return "port is empty.";
