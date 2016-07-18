@@ -103,7 +103,6 @@ void connection::run()
         read_some(socket_);
 
     error_code error;
-
     io_service_.run(error);
 
     if (error)
