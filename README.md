@@ -2,7 +2,12 @@ libircppclient
 ===============================
 A simple-to-use library for communication with IRC servers.
 
-Currently, the current implementation within a program using this library is a `struct` containing the following:
+Presently, this library relies on Boost.Asio — and a bit on regular Boost, this is subject to change to std::asio, once c++20 is the latest standard.
+
+Usage
+-----
+
+The current implementation within a program using this library is a `struct` containing the following:
 
 ```cpp
 struct config {
@@ -19,7 +24,6 @@ struct config {
         nick_pw   = "ech!",
         server_pw = "";
 
-    /* Support not yet implemented */
     bool ssl  = true;
 };
 ```
@@ -42,15 +46,6 @@ irc::client client(conf);
 client.start();
 ```
 
-Any new ideas for the interaction with the library is welcomed!
-
-Todo
-----
-* Make it easier to use.
-* Implement a FIFO structure for messages from the server.
-* Create a way to debug it.
-* Colour support.
-
 Design Goals and Plans
 ------------
 * Simple, logical, and easy to use.
@@ -58,12 +53,11 @@ Design Goals and Plans
 * Unicode support.
 * Colour support.
 * Thread-safe and whatever C++ libraries should be.
-* Debug program with an interactive shell (akin to interactive Python)?
 
 Dependencies
 ------------
 * CMake 3.0
-* Boost.asio (tested with >= 1.59.0)
+* Boost and Boost.Asio (tested with >= 1.59.0)
 * A compiler with C++11 support, such as Clang or GCC
 
 Thanks to:
