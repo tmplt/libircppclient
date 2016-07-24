@@ -44,12 +44,6 @@ public:
         ext_read_handler_ = handler;
     }
 
-    /* Is the connection still alive? */
-    bool is_alive() const
-    {
-        return socket_.lowest_layer().is_open();
-    }
-
     void set_addr(const std::string &addr)
     {
         addr_ = addr;
