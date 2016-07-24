@@ -43,7 +43,6 @@ error_code connection::try_handshake()
 void connection::connect()
 {
     using boost::asio::ip::tcp;
-    using boost::asio::connect;
 
     /*
      * Resolve the host and generate a list of endpoints.
@@ -57,7 +56,7 @@ void connection::connect()
     error_code error = boost::asio::error::host_not_found;
 
     if (use_ssl_) {
-        connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
+        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
 
         if (!error) {
 
@@ -70,7 +69,7 @@ void connection::connect()
     }
 
     else
-        connect(socket_.lowest_layer(), r.resolve(query), error);
+        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), error);
 
     if (error)
         throw error;
