@@ -72,9 +72,9 @@ Dependencies
 Thanks to:
 ----------
 
--  `muriloadriano` <https://github.com/muriloadriano>__ for the creation
+-  `muriloadriano <https://github.com/muriloadriano>`__ for the creation
    of `cleverbot <https://github.com/muriloadriano/cleverbot>`__ —
    Boost.asio-based IRC bot under the MIT license.
--  `jrosdahl` <https://github.com/jrosdahl>__ for
+-  `jrosdahl <https://github.com/jrosdahl>`__ for
    `miniircd <https://github.com/jrosdahl/miniircd>`__ — A (very) simple
    IRC server, which prints server events in its raw form.
