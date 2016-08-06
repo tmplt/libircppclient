@@ -42,7 +42,6 @@ std::string client::validate_conf(const config &c)
     using std::string;
 
     /* Address checking. */
-
     if (c.address.empty())
         return "the address is empty.";
 
@@ -54,7 +53,6 @@ std::string client::validate_conf(const config &c)
     }
 
     /* Port checking. */
-
     if (c.port.empty())
         return "port is empty.";
 
