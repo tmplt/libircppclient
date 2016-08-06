@@ -35,7 +35,7 @@ std::string gen::valid_addr(const std::string &addr)
     /*
      * Only checks if addr is in an ipv4/6 address.
      * Addresses such as irc.domain.tld and localhost
-     * are invalid here.
+     * are invalid here, and thus sets error positive.
      */
     boost::asio::ip::address::from_string(addr, error);
 
