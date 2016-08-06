@@ -8,11 +8,10 @@ using boost::asio::ip::tcp;
 
 namespace irc {
 
-/* A seperate thread which pings. */
-using ping_th =  std::function<void (void)>;
+using ping_func = std::function<void (void)>;
 
 /* A type which takes a lambda as argument.. */
-using read_handler_t =  std::function<void (const std::string &content)>;
+using read_handler_t = std::function<void (const std::string &content)>;
 
 using     boost::asio::ip::tcp;
 using     boost::system::error_code;
@@ -105,8 +104,8 @@ private:
     read_handler_t ext_read_handler_;
 
     /* The library's life line. */
-    ping_th ping_handler_ = std::bind(&connection::ping, this);
-    bool    do_ping = true;
+    ping_func ping_handler_ = std::bind(&connection::ping, this);
+    bool do_ping = true;
 
     /*
      * 512B is the max message length within the IRC protocol.
