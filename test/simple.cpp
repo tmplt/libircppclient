@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     irc::config conf;
     conf.address = argv[1];
 
-    std::string port = argv[2];
+    std::string port = (argv[2] ? argv[2] : "6667");
 
     if (port[0] == '+') {
         conf.ssl  = true;
