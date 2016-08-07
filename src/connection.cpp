@@ -74,17 +74,41 @@ void connection::connect()
         throw ec;
 }
 
+void connection::read_handler(const error_code &ec, std::size_t length)
+{
+    using namespace boost;
+    using std::string;
+
+    if (ec) {
+        /* Unable to read from server. */
+        throw ec;
+    } else {
+        const string content(string(read_buffer_.data(), length));
+
+        std::stringstream iss(content);
+        string command;
+        iss >> command;
+
+        if (command == "PING")
+            pong();
+        else
+            ext_read_handler_(content);
+
+        if (use_ssl_)
+            read_some(ssl_socket_);
+        else
+            read_some(socket_);
+    }
+}
+
+
 template<class S>
 void connection::read_some(S &s)
 {
     using namespace boost::asio;
 
-    /*
-     * Start an asynchronous read thread going through connection::read().
-     * Pass the arguments (this, [...], [...]) to the it.
-     */
     s.async_read_some(buffer(read_buffer_),
-        boost::bind(&connection::read,
+        boost::bind(&connection::read_handler,
             this, placeholders::error,
             placeholders::bytes_transferred()));
 }
@@ -156,52 +180,6 @@ void connection::write(std::string content)
 
     if (ec)
         throw ec;
-}
-
-void connection::read(const error_code &ec, std::size_t length)
-{
-    using namespace boost;
-
-    if (ec)
-        /* Unable to read from server. */
-        throw ec;
-
-    else {
-
-        /*
-         * Works in synergy with socket::read_some().
-         *
-         * Copy the data within the buffer and the length of it
-         * and pass it to the class' read_handler.
-         */
-        read_handler(std::string(read_buffer_.data(), length));
-
-        /*
-         * Start an asynchronous recursive read thread.
-         *
-         * Read data from the IRC server into the buffer, and
-         * call this function again.
-         *
-         * Pass the eventual error and the message length.
-         */
-        if (use_ssl_)
-            read_some(ssl_socket_);
-        else
-            read_some(socket_);
-    }
-}
-
-void connection::read_handler(const std::string &content)
-{
-    std::stringstream iss(content);
-    std::string command;
-
-    iss >> command;
-
-    if (command == "PING")
-        pong();
-    else
-        ext_read_handler_(content);
 }
 
 void connection::stop()

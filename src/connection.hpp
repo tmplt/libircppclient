@@ -61,37 +61,29 @@ public:
 private:
 
     /*
-     * For both ssl and non-ssl, which a bit different,
-     * but share the same interface.
+     * For both ssl and non-ssl, which are a bit different,
+     * but share the same interface when it comes to reading.
      */
     template<class S>
     void read_some(S &socket);
-
-    /*
-     * Asynchronosouly looping. This function pushes any read data
-     * to read_handler().
-     */
-    void read(const boost::system::error_code &error, std::size_t length);
 
     /*
      * Handles RFC-specific requests, e.g. PING, VERSION, etc.
      * Everything else is passed onto the external read handler,
      * which resides in libircppclient.cpp.
      */
-    void read_handler(const std::string &content);
+    void read_handler(const boost::system::error_code &error, std::size_t length);
 
     /*
      * So that we do not get kicked from the server, and so that the
      * server itself does not have to ping us, which seems preferable
-     * according to the RFC.
+     * according to the standard.
      *
      * In a perfect implementation, this should only be used when no
      * command has been sent to the server for a specified amount of time
      * (as the RFC explains), but boy are timers tricky!
      */
     void ping();
-
-    /* Fail-safe for ping(). */
     void pong();
 
     /* For SSL connections. */
@@ -104,7 +96,10 @@ private:
 
     read_handler_t ext_read_handler_;
 
-    /* The library's life line. */
+    /*
+     * Executed in its own thread within connection::run().
+     * Practically the library's main loop.
+     */
     ping_func ping_handler_ = std::bind(&connection::ping, this);
     bool do_ping = true;
 
