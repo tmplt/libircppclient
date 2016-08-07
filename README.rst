@@ -62,6 +62,10 @@ Design Goals and Plans
 -  Colour support.
 -  Thread-safe and whatever C++ libraries should be.
 
+Code Style
+----------
+Syntax-wise, follow `the Linux kernel coding style <https://www.kernel.org/doc/Documentation/CodingStyle>`__, but don't be afraid to tangent from it, in case it makes the code easier to understand.
+
 Dependencies
 ------------
 
