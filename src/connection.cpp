@@ -24,17 +24,18 @@ connection::connection(const bool use_ssl)
     }
 }
 
-/*
- * error_code would here imply that a fail is expected, but
- * it is not; it could be aliased, but that would only make
- * matters worse, I believe.
- */
-error_code connection::try_handshake()
+error_code connection::verify_cert()
 {
     error_code ret;
+    ssl_socket_.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
+    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_), ret);
 
-    ssl_socket_.set_verify_mode(ssl::verify_peer);
-    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_));
+    return ret;
+}
+
+error_code connection::shake_hands()
+{
+    error_code ret;
     ssl_socket_.handshake(ssl_socket::client, ret);
 
     return ret;
@@ -59,12 +60,10 @@ void connection::connect()
         boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
 
         if (!error) {
+            error = verify_cert();
 
-            /*
-             * While not requested, one _could_ arise.
-             * Non-zero equals successful handshake.
-             */
-            error = try_handshake();
+            if (!error)
+                error = shake_hands();
         }
     }
 

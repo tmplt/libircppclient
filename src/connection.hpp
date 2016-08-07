@@ -95,7 +95,8 @@ private:
     void pong();
 
     /* For SSL connections. */
-    error_code try_handshake();
+    error_code verify_cert();
+    error_code shake_hands();
 
     /* Server information. */
     std::string addr_ = "";
