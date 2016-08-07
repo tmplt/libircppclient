@@ -16,29 +16,29 @@ connection::connection(const bool use_ssl)
       use_ssl_(use_ssl), ctx_(ssl::context::sslv23), ssl_socket_(io_service_, ctx_)
 {
     if (use_ssl_) {
-        boost::system::error_code error;
-        ctx_.set_default_verify_paths(error);
+        boost::system::error_code ec;
+        ctx_.set_default_verify_paths(ec);
 
-        if (error)
-            throw error;
+        if (ec)
+            throw ec;
     }
 }
 
 error_code connection::verify_cert()
 {
-    error_code ret;
+    error_code ec;
     ssl_socket_.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
-    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_), ret);
+    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_), ec);
 
-    return ret;
+    return ec;
 }
 
 error_code connection::shake_hands()
 {
-    error_code ret;
-    ssl_socket_.handshake(ssl_socket::client, ret);
+    error_code ec;
+    ssl_socket_.handshake(ssl_socket::client, ec);
 
-    return ret;
+    return ec;
 }
 
 void connection::connect()
@@ -54,24 +54,24 @@ void connection::connect()
     tcp::resolver::query query(addr_, port_);
 
     /* default error. */
-    error_code error = boost::asio::error::host_not_found;
+    error_code ec = boost::asio::error::host_not_found;
 
     if (use_ssl_) {
-        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), error);
+        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), ec);
 
-        if (!error) {
-            error = verify_cert();
+        if (!ec) {
+            ec = verify_cert();
 
-            if (!error)
-                error = shake_hands();
+            if (!ec)
+                ec = shake_hands();
         }
     }
 
     else
-        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), error);
+        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), ec);
 
-    if (error)
-        throw error;
+    if (ec)
+        throw ec;
 }
 
 template<class S>
@@ -100,14 +100,17 @@ void connection::run()
     else
         read_some(socket_);
 
-    error_code error;
-    io_service_.run(error);
+    error_code ec;
+    io_service_.run(ec);
 
-    if (error)
-        throw error;
-
-    /* Remain at this point until we do not need the connection any more. */
+    /*
+     * Remain at this point until we
+     * do not need the connection any more.
+     */
     ping_thread.join();
+
+    if (ec)
+        throw ec;
 }
 
 void connection::ping()
@@ -144,25 +147,25 @@ void connection::write(std::string content)
      */
     content.append("\r\n");
 
-    error_code error;
+    error_code ec;
     cout << "[debug] writing: " << content;
 
     if (use_ssl_)
-        write(ssl_socket_, buffer(content), error);
+        write(ssl_socket_, buffer(content), ec);
     else
-        write(socket_.next_layer(), buffer(content), error);
+        write(socket_.next_layer(), buffer(content), ec);
 
-    if (error)
-        throw error;
+    if (ec)
+        throw ec;
 }
 
-void connection::read(const error_code &error, std::size_t length)
+void connection::read(const error_code &ec, std::size_t length)
 {
     using namespace boost;
 
-    if (error)
+    if (ec)
         /* Unable to read from server. */
-        throw error;
+        throw ec;
 
     else {
 
