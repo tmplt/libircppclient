@@ -149,7 +149,7 @@ void connection::write(std::string content)
     cout << "[debug] writing: " << content;
 
     if (use_ssl_)
-        write(ssl_socket_.next_layer(), buffer(content), error);
+        write(ssl_socket_, buffer(content), error);
     else
         write(socket_.next_layer(), buffer(content), error);
 
