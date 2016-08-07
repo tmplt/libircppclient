@@ -61,7 +61,7 @@ public:
 private:
 
     /*
-     * For both ssl and non-ssl, which are quite different,
+     * For both ssl and non-ssl, which a bit different,
      * but share the same interface.
      */
     template<class S>
@@ -121,6 +121,12 @@ private:
      */
     std::array<char, 512> read_buffer_;
 
+    /*
+     * Do not change this order, lest you want segfaults!
+     *
+     * ssl_socket_ requires both io_service_ and ctx_ to construct,
+     * and for some apparent reason the order of these matter.
+     */
     boost::asio::io_service io_service_;
 
     bool         use_ssl_;

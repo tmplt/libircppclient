@@ -207,6 +207,13 @@ void connection::read_handler(const std::string &content)
 
 void connection::stop()
 {
+    /*
+     * For a proper shutdown, we first need to terminate
+     * the ping thread, which might have to be done while
+     * it's in nanosleep. After that, we are free to stop
+     * the io_service.
+     */
+
     if (use_ssl_)
         ssl_socket_.lowest_layer().close();
     else

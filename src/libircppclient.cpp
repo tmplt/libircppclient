@@ -71,6 +71,11 @@ void client::initialize()
 void client::start()
 {
     con_.connect();
+
+    /*
+     * These writes will be put in the io_service's
+     * queue until a complete connection has been made.
+     */
     initialize();
     con_.run();
 }
