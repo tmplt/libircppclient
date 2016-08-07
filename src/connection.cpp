@@ -126,7 +126,6 @@ void connection::ping()
          * decision?
          */
         std::this_thread::sleep_for(1min + 30s);
-
         write("PING " + addr_);
     }
 }

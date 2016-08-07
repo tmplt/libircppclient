@@ -13,9 +13,9 @@ using ping_func = std::function<void (void)>;
 /* A type which takes a lambda as argument.. */
 using read_handler_t = std::function<void (const std::string &content)>;
 
-using     boost::asio::ip::tcp;
-using     boost::system::error_code;
-using     boost::asio::buffered_stream;
+using boost::asio::ip::tcp;
+using boost::system::error_code;
+using boost::asio::buffered_stream;
 namespace ssl = boost::asio::ssl;
 
 using ssl_socket = ssl::stream<tcp::socket>;
