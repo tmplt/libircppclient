@@ -65,10 +65,9 @@ void connection::connect()
             if (!ec)
                 ec = shake_hands();
         }
-    }
-
-    else
+    } else {
         boost::asio::connect(socket_.lowest_layer(), r.resolve(query), ec);
+    }
 
     if (ec)
         throw ec;

@@ -34,9 +34,7 @@ int main(int argc, char *argv[])
 
         /* Remove the SSL sign. */
         conf.port = port.erase(0,1);
-    }
-
-    else {
+    } else {
         conf.ssl  = false;
         conf.port = port;
     }

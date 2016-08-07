@@ -85,10 +85,9 @@ void client::whowas(const std::string &nick, const std::string &count, const std
     if (nick.empty())
         throw std::invalid_argument("nick is empty");
 
-    if (count.empty() && server.empty())
+    if (count.empty() && server.empty()) {
         con_.write("WHOWAS " + nick);
-
-    else {
+    } else {
         if (server.empty())
             con_.write("WHOWAS " + nick + ' ' + count);
         else
