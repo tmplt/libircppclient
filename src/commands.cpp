@@ -1,4 +1,5 @@
 #include "libircppclient.hpp"
+#include <string>
 
 /*
  * Should these functions return something instead of
@@ -18,7 +19,7 @@ void client::nick(const std::string &nick)
     if (nick.empty())
         throw std::invalid_argument("nick is empty.");
 
-    con.write("NICK " + nick);
+    con_.write("NICK " + nick);
 }
 
 void client::join(const std::string &chans, const std::string &keys)
@@ -27,9 +28,9 @@ void client::join(const std::string &chans, const std::string &keys)
         throw std::invalid_argument("chans is empty.");
 
     if (keys.empty())
-        con.write("JOIN " + chans);
+        con_.write("JOIN " + chans);
     else
-        con.write("JOIN " + chans + ' ' + keys);
+        con_.write("JOIN " + chans + ' ' + keys);
 }
 
 void client::msg(const std::string &target, const std::string &message)
@@ -38,7 +39,7 @@ void client::msg(const std::string &target, const std::string &message)
         throw std::invalid_argument("message or target empty");
 
     /* Applies to channels and nicks, both. */
-    con.write("PRIVMSG " + target + " :" + message);
+    con_.write("PRIVMSG " + target + " :" + message);
 }
 
 void client::notice(const std::string &target, const std::string &message)
@@ -46,7 +47,7 @@ void client::notice(const std::string &target, const std::string &message)
     if (message.empty() || target.empty())
         throw std::invalid_argument("target or message empty");
 
-    con.write("NOTICE " + target + " :" + message);
+    con_.write("NOTICE " + target + " :" + message);
 }
 
 void client::who(const std::string &query, const bool operators)
@@ -54,16 +55,16 @@ void client::who(const std::string &query, const bool operators)
     /* As per the RFC. */
     if (query.empty() || query == "0") {
         if (operators)
-            con.write("WHO o");
+            con_.write("WHO o");
         else
-            con.write("WHO");
+            con_.write("WHO");
     }
 
     else {
         if (operators)
-            con.write("WHO " + query + " o");
+            con_.write("WHO " + query + " o");
         else
-            con.write("WHO " + query);
+            con_.write("WHO " + query);
     }
 
 }
@@ -74,9 +75,9 @@ void client::whois(const std::string &ids, const std::string &server)
         throw std::invalid_argument("ids is empty.");
 
     if (server.empty())
-        con.write("WHOIS " + ids);
+        con_.write("WHOIS " + ids);
     else
-        con.write("WHOIS " + server + ' ' + ids);
+        con_.write("WHOIS " + server + ' ' + ids);
 }
 
 void client::whowas(const std::string &nick, const std::string &count, const std::string &server)
@@ -85,13 +86,13 @@ void client::whowas(const std::string &nick, const std::string &count, const std
         throw std::invalid_argument("nick is empty");
 
     if (count.empty() && server.empty())
-        con.write("WHOWAS " + nick);
+        con_.write("WHOWAS " + nick);
 
     else {
         if (server.empty())
-            con.write("WHOWAS " + nick + ' ' + count);
+            con_.write("WHOWAS " + nick + ' ' + count);
         else
-            con.write("WHOWAS " + nick + ' ' + count + ' ' + server);
+            con_.write("WHOWAS " + nick + ' ' + count + ' ' + server);
     }
 }
 
@@ -100,15 +101,15 @@ void client::oper(const std::string &nick, const std::string &pass)
     if (nick.empty() || pass.empty())
         throw std::invalid_argument("nick or pass empty");
     else
-        con.write("OPER " + nick + ' ' + pass);
+        con_.write("OPER " + nick + ' ' + pass);
 }
 
 void client::quit(const std::string &message)
 {
     if (message.empty())
-        con.write("QUIT");
+        con_.write("QUIT");
     else
-        con.write("QUIT :" + message);
+        con_.write("QUIT :" + message);
 
     /* Currently broken. */
     stop();
@@ -117,9 +118,9 @@ void client::quit(const std::string &message)
 void client::away(const std::string &message)
 {
     if (message.empty())
-        con.write("AWAY");
+        con_.write("AWAY");
     else
-        con.write("AWAY " + message);
+        con_.write("AWAY " + message);
 }
 
 void client::part(const std::string &chans)
@@ -127,7 +128,7 @@ void client::part(const std::string &chans)
     if (chans.empty())
         throw std::invalid_argument("chans is empty");
 
-    con.write("PART " + chans);
+    con_.write("PART " + chans);
 }
 
 void client::mode(const std::string &chan, const std::string &modes, const std::string &id)
@@ -136,9 +137,9 @@ void client::mode(const std::string &chan, const std::string &modes, const std::
         throw std::invalid_argument("chan or modes empty");
 
     if (id.empty())
-        con.write("MODE " + chan + ' ' + modes);
+        con_.write("MODE " + chan + ' ' + modes);
     else
-        con.write("MODE " + chan + ' ' + modes + ' ' + id);
+        con_.write("MODE " + chan + ' ' + modes + ' ' + id);
 }
 
 void client::topic(const std::string &chan, const std::string &topic)
@@ -147,17 +148,17 @@ void client::topic(const std::string &chan, const std::string &topic)
         throw std::invalid_argument("chan is empty");
 
     if (topic.empty())
-        con.write("TOPIC " + chan);
+        con_.write("TOPIC " + chan);
     else
-        con.write("TOPIC " + chan + " :" + topic);
+        con_.write("TOPIC " + chan + " :" + topic);
 }
 
 void client::names(const std::string &chans)
 {
     if (chans.empty())
-        con.write("NAMES");
+        con_.write("NAMES");
     else
-        con.write("NAMES " + chans);
+        con_.write("NAMES " + chans);
 }
 
 void client::invite(const std::string &nick, const std::string &chan)
@@ -165,7 +166,7 @@ void client::invite(const std::string &nick, const std::string &chan)
     if (nick.empty() || chan.empty())
         throw std::invalid_argument("");
 
-    con.write("INVITE " + nick + ' ' + chan);
+    con_.write("INVITE " + nick + ' ' + chan);
 }
 
 void client::kick(const std::string &chan, const std::string &id, const std::string &comment)
@@ -174,18 +175,19 @@ void client::kick(const std::string &chan, const std::string &id, const std::str
         throw std::invalid_argument("chan or id empty.");
 
     if (comment.empty())
-        con.write("KICK " + chan + ' ' + id);
+        con_.write("KICK " + chan + ' ' + id);
     else
-        con.write("KICK " + chan + ' ' + id + " :" + comment);
+        con_.write("KICK " + chan + ' ' + id + " :" + comment);
 }
 
 void client::list(const std::string &chans)
 {
     if (chans.empty())
-        con.write("LIST");
+        con_.write("LIST");
     else
-        con.write("LIST " + chans);
+        con_.write("LIST " + chans);
 }
 
 /* ns irc */
 }
+

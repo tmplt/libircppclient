@@ -1,5 +1,6 @@
 #pragma once
 #include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 #include <functional>
 #include <string>
 
@@ -7,96 +8,105 @@ using boost::asio::ip::tcp;
 
 namespace irc {
 
-/* Handles data received from the server. */
-typedef std::function<void (const std::string &content)> read_handler_t;
+using ping_func = std::function<void (void)>;
 
-/* Only used to keep the connection alive. */
-typedef std::function<void (void)> ping_t;
+/* A type which takes a lambda as argument.. */
+using read_handler_t = std::function<void (const std::string &content)>;
+
+using boost::asio::ip::tcp;
+using boost::system::error_code;
+using boost::asio::buffered_stream;
+namespace ssl = boost::asio::ssl;
+
+using ssl_socket = ssl::stream<tcp::socket>;
+using nossl_socket = buffered_stream<tcp::socket>;
 
 class connection {
 public:
-    /* "Bind" used socket to the io_service. */
-    connection() : socket_(io_service_) { }
+    connection(const bool use_ssl);
 
-     /*
-     * Check if given arguments are valid, then attempt to connect to the
-     * server. Throw an error if unsuccessful or if the data is invalid.
-     */
-    void connect(const std::string &addr, std::string &port, const bool ssl);
+    void connect();
 
-    /* io_service, and the loop itself; not the connection itself. */
     void run();
     void stop();
 
-    /*
-     * Asynchronously loop this function and push any read data to
-     * read_handler()...
-     */
-    void read(const boost::system::error_code &error, std::size_t length);
-
-    /* Only handles connection-specific requests, e.g., PING */
-    void read_handler(const std::string &content);
-
-    /* ... but write synchronously. */
-    void write(const std::string &content);
+    /* CR-LF is appended */
+    void write(std::string content);
 
     /*
      * "Binds" the external read handler, which handles everything
-     * this class' read_handler() do not. Bound function may
-     * exist in any class.
+     * this class' read_handler() do not. Bound function
+     * resides within libircppclient.cpp.
      */
     void set_ext_read_handler(const read_handler_t &handler)
     {
         ext_read_handler_ = handler;
     }
 
+    void set_addr(const std::string &addr)
+    {
+        addr_ = addr;
+    }
+
+    void set_port(const std::string &port)
+    {
+        port_ = port;
+    }
+
+    void stop_ping()
+    {
+        do_ping = false;
+    }
+
+private:
+
+    /*
+     * For both ssl and non-ssl, which a bit different,
+     * but share the same interface.
+     */
+    template<class S>
+    void read_some(S &socket);
+
+    /*
+     * Asynchronosouly looping. This function pushes any read data
+     * to read_handler().
+     */
+    void read(const boost::system::error_code &error, std::size_t length);
+
+    /*
+     * Handles RFC-specific requests, e.g. PING, VERSION, etc.
+     * Everything else is passed onto the external read handler,
+     * which resides in libircppclient.cpp.
+     */
+    void read_handler(const std::string &content);
+
     /*
      * So that we do not get kicked from the server, and so that the
      * server itself does not have to ping us, which seems preferable
-     * in the IRC specification.
+     * according to the RFC.
      *
      * In a perfect implementation, this should only be used when no
-     * command has been sent to the server for a specified amount of time.
-     * Currently, the implementation does not adhere to this.
+     * command has been sent to the server for a specified amount of time
+     * (as the RFC explains), but boy are timers tricky!
      */
     void ping();
 
     /* Fail-safe for ping(). */
     void pong();
 
-    /* For a graceful shutdown. */
-    void stop_ping()
-    {
-        do_ping = false;
-    }
+    /* For SSL connections. */
+    error_code verify_cert();
+    error_code shake_hands();
 
-    /* Is the connection still alive? */
-    bool is_alive() const
-    {
-        return socket_.is_open();
-    }
-
-private:
     /* Server information. */
-    std::string addr_;
-    std::string port_;
+    std::string addr_ = "";
+    std::string port_ = "";
 
-    /* Required by any program using boost::asio. */
-    boost::asio::io_service io_service_;
-    boost::asio::ip::tcp::socket socket_;
-
-    /*
-     * All received data that passed this class'
-     * read_handler() goes through this object.
-     */
     read_handler_t ext_read_handler_;
 
-    /* Keeping the connection alive. */
-    ping_t ping_handler_ = std::bind(&connection::ping, this);
-    bool   do_ping = true;
-
-    /* Only called by the overloaded function, thus private. */
-    void connect();
+    /* The library's life line. */
+    ping_func ping_handler_ = std::bind(&connection::ping, this);
+    bool do_ping = true;
 
     /*
      * 512B is the max message length within the IRC protocol.
@@ -109,8 +119,22 @@ private:
      *
      * Might change this at a later date, given how IRCv3 seems to work.
      */
-    std::array<char, 512> buffer_;
+    std::array<char, 512> read_buffer_;
+
+    /*
+     * Do not change this order, lest you want segfaults!
+     *
+     * ssl_socket_ requires both io_service_ and ctx_ to construct,
+     * and for some apparent reason the order of these matter.
+     */
+    boost::asio::io_service io_service_;
+
+    bool         use_ssl_;
+    nossl_socket socket_;
+    ssl::context ctx_;
+    ssl_socket   ssl_socket_;
 };
 
 /* ns irc */
 }
+

@@ -9,6 +9,9 @@ class client {
 public:
     client(const config &c);
 
+    /* Check if config date is valid, if not return non-empty. */
+    std::string validate_conf(const config &c);
+
     void start();
     void stop();
 
@@ -20,6 +23,7 @@ public:
      * the channel prefix [#|&|...] must be included.
      */
 
+// RFC commands
 // Connection registration:
 
     /*
@@ -119,7 +123,7 @@ public:
      */
     void raw_cmd(const std::string &content);
 
-protected:
+private:
     config conf_;
 
     /*
@@ -129,11 +133,11 @@ protected:
     void read_handler(const std::string &content);
     std::vector<read_handler_t> read_handlers_;
 
-    connection con;
+    connection con_;
 
-private:
     void initialize();
 };
 
 /* ns libircppclient */
 }
+

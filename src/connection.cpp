@@ -1,38 +1,44 @@
-#include "connection.hpp"
-#include <boost/thread.hpp>
-#include "general.hpp"
 #include <thread>
+#include <string>
+#include <boost/bind.hpp>
+#include "connection.hpp"
+#include "general.hpp"
+
+#include <iostream>
+using std::cout;
+using std::endl;
 
 namespace irc {
 
-void connection::connect(const std::string &addr, std::string &port, const bool ssl)
+connection::connection(const bool use_ssl)
+    : socket_(io_service_),
+      /* SSL */
+      use_ssl_(use_ssl), ctx_(ssl::context::sslv23), ssl_socket_(io_service_, ctx_)
 {
-    using std::invalid_argument;
+    if (use_ssl_) {
+        boost::system::error_code ec;
+        ctx_.set_default_verify_paths(ec);
 
-    if (addr.empty())
-        throw invalid_argument("The adress is empty.");
-
-    else {
-        std::string ret = gen::valid_addr(addr);
-
-        if (!ret.empty()) {
-            std::string reason = "Invalid address, reason: " + ret;
-            throw invalid_argument(reason);
-        }
+        if (ec)
+            throw ec;
     }
+}
 
-    if (port.empty())
-        port = (ssl ? "6697" : "6667");
+error_code connection::verify_cert()
+{
+    error_code ec;
+    ssl_socket_.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
+    ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_), ec);
 
-    else if (!gen::is_integer(port))
-        throw invalid_argument("The port contains one or more non-integer.");
+    return ec;
+}
 
-    else {
-        addr_ = addr;
-        port_ = port;
+error_code connection::shake_hands()
+{
+    error_code ec;
+    ssl_socket_.handshake(ssl_socket::client, ec);
 
-        connect();
-    }
+    return ec;
 }
 
 void connection::connect()
@@ -46,46 +52,65 @@ void connection::connect()
      */
     tcp::resolver r(io_service_);
     tcp::resolver::query query(addr_, port_);
-    tcp::resolver::iterator endpt_it = r.resolve(query);
 
-    /* Denotes the end of the list of generated endpoints. */
-    decltype(endpt_it) end;
+    /* default error. */
+    error_code ec = boost::asio::error::host_not_found;
 
-    /* Default error. */
-    boost::system::error_code error = boost::asio::error::host_not_found;
+    if (use_ssl_) {
+        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), ec);
 
-    /* Iterate until we've reached the end of the list. */
-    while (endpt_it != end) {
-        if (!error)
-            break;
+        if (!ec) {
+            ec = verify_cert();
 
-        socket_.close();
-        socket_.connect(*endpt_it++, error);
+            if (!ec)
+                ec = shake_hands();
+        }
     }
 
-    if (error)
-        throw error;
+    else
+        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), ec);
+
+    if (ec)
+        throw ec;
+}
+
+template<class S>
+void connection::read_some(S &s)
+{
+    using namespace boost::asio;
+
+    /*
+     * Start an asynchronous read thread going through connection::read().
+     * Pass the arguments (this, [...], [...]) to the it.
+     */
+    s.async_read_some(buffer(read_buffer_),
+        boost::bind(&connection::read,
+            this, placeholders::error,
+            placeholders::bytes_transferred()));
 }
 
 void connection::run()
 {
-    using namespace boost;
+    using namespace boost::asio;
 
-    std::thread ping_handler_thread(ping_handler_);
+    std::thread ping_thread(ping_handler_);
+
+    if (use_ssl_)
+        read_some(ssl_socket_);
+    else
+        read_some(socket_);
+
+    error_code ec;
+    io_service_.run(ec);
 
     /*
-     * Start an asynchronous read thread going through connection::read().
-     * Pass the arguments (this, _1, _2) to the handler.
+     * Remain at this point until we
+     * do not need the connection any more.
      */
-    socket_.async_read_some(asio::buffer(buffer_),
-        bind(&connection::read,
-            this, asio::placeholders::error,
-            asio::placeholders::bytes_transferred()));
+    ping_thread.join();
 
-    io_service_.run();
-
-    /* Remain at this point until we do not need the connection any more. */
-    ping_handler_thread.join();
+    if (ec)
+        throw ec;
 }
 
 void connection::ping()
@@ -101,9 +126,6 @@ void connection::ping()
          * decision?
          */
         std::this_thread::sleep_for(1min + 30s);
-
-        /* For debugging */
-        std::cout << "[info] Pinging " << addr_ << '.' << std::endl;
         write("PING " + addr_);
     }
 }
@@ -113,32 +135,46 @@ void connection::pong()
     write("PONG :" + addr_);
 }
 
-void connection::write(const std::string &content)
+void connection::write(std::string content)
 {
+    using boost::asio::write;
+    using boost::asio::buffer;
+
     /*
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
-    boost::asio::write(socket_, boost::asio::buffer(content + "\r\n"));
+    content.append("\r\n");
+
+    error_code ec;
+    cout << "[debug] writing: " << content;
+
+    if (use_ssl_)
+        write(ssl_socket_, buffer(content), ec);
+    else
+        write(socket_.next_layer(), buffer(content), ec);
+
+    if (ec)
+        throw ec;
 }
 
-void connection::read(const boost::system::error_code &error, std::size_t length)
+void connection::read(const error_code &ec, std::size_t length)
 {
     using namespace boost;
 
-    if (error)
+    if (ec)
         /* Unable to read from server. */
-        throw error;
+        throw ec;
 
     else {
 
         /*
-         * Works in synergy with socket::async_read_some().
+         * Works in synergy with socket::read_some().
          *
          * Copy the data within the buffer and the length of it
          * and pass it to the class' read_handler.
          */
-        read_handler(std::string(buffer_.data(), length));
+        read_handler(std::string(read_buffer_.data(), length));
 
         /*
          * Start an asynchronous recursive read thread.
@@ -148,10 +184,10 @@ void connection::read(const boost::system::error_code &error, std::size_t length
          *
          * Pass the eventual error and the message length.
          */
-        socket_.async_read_some(asio::buffer(buffer_),
-            bind(&connection::read,
-                this, asio::placeholders::error,
-                asio::placeholders::bytes_transferred));
+        if (use_ssl_)
+            read_some(ssl_socket_);
+        else
+            read_some(socket_);
     }
 }
 
@@ -170,9 +206,21 @@ void connection::read_handler(const std::string &content)
 
 void connection::stop()
 {
-    socket_.close();
+    /*
+     * For a proper shutdown, we first need to terminate
+     * the ping thread, which might have to be done while
+     * it's in nanosleep. After that, we are free to stop
+     * the io_service.
+     */
+
+    if (use_ssl_)
+        ssl_socket_.lowest_layer().close();
+    else
+        socket_.lowest_layer().close();
+
     io_service_.stop();
 }
 
 /* ns irc */
 }
+

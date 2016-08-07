@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(libircppclient VERSION 0.4.1)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # Get the latest abbreviated commit hash of the working branch
 execute_process(
     COMMAND git rev-parse --short HEAD
@@ -27,10 +29,6 @@ endif()
 # For pthreads.
 set(THREADS_PREFER_PTHEAD_FLAG ON)
 
-# For Boost.
-set(Boost_USE_STATIC_LIBS    OFF)
-set(Boost_USE_MULTITHREADED  ON)
-
 find_package(Boost COMPONENTS system REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -39,7 +37,7 @@ set(LINK_LIBS libircppclient ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${OPEN
 
 # Include CMakeLists.txt from src/ and tests/
 add_subdirectory(src)
-add_subdirectory(tests)
+add_subdirectory(test)
 
 string(CONCAT PROJECT_NAME_VERSION ${PROJECT_NAME}\ v${VERSION_STRING}+${GIT_COMMIT_HASH})
 
