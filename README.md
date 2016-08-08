@@ -1,10 +1,14 @@
 ## About
-*libircppclient* is a IRC client library based on Boost.Asio and experimental
-features from C++17. It aims to be easy-to-use, memory efficient and whatever else
-a C++ library should ne. The name comes from the C library under the similar name: *libircclient*.
+*libircppclient* is an IRC client library based on Boost.Asio and experimental
+features from C++17.
+It aims to be easy-to-use,
+memory efficient and whatever else a C++ library should be.
+The name comes from the C library under the similar name: *libircclient*.
 
-While Boost.Asio is a current dependency, it's planned for removal in *some* future
-version. Either we'll get `std::asio` from C++20, or I'll just have to learn sockets.
+While Boost.Asio is a current dependency,
+it's planned for removal in *some* future version.
+Either we'll get `std::asio` from C++20,
+or I'll just have to learn sockets.
 
 ## Usage
 
@@ -50,16 +54,18 @@ client.start();
 
 ## Design Goals and Plans
 - Simple, logical, and easy to use.
-- Full compliance with [RFC1459](https://tools.ietf.org/html/rfc1459) and by extension [IRCv3](http://ircv3.net/).
+- Full compliance with [RFC2812](https://tools.ietf.org/html/rfc2812) and by extension [IRCv3](http://ircv3.net/).
 - Unicode support.
 - Colour support.
 
 ## Code Style
-Syntax-wise, generally follow [the Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle)
-except when it comes to indention which is four (4) spaces. Tabs are illegal.
+Syntax-wise,
+generally follow [the Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle) except when it comes to indention,
+which is four (4) spaces.
+Tabs are illegal.
 
-Some parts of the LKCS might be harder to read/understand in C++. Feel free to deviate from the standard it
-improves code quality.
+Some parts of the LKCS might be harder to read/understand in C++.
+Feel free to deviate from the standard if it improves code quality.
 
 ## Dependencies
 - CMake 3.0
