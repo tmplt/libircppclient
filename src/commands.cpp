@@ -1,17 +1,6 @@
 #include "libircppclient.hpp"
 #include <string>
 
-/*
- * Should these functions return something instead of
- * throwing stuff about?
- */
-
-/*
- * Some IRC commands may have optional arguments.
- * These arguments, in this library, are the tail arguments,
- * even if they may not be that in the RFC.
- */
-
 namespace irc {
 
 void client::nick(const std::string &nick)
