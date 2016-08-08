@@ -32,7 +32,7 @@ client::client(const config &conf)
      * read_handler() here. Otherwise, you'd need to fiddle
      * with connection.hpp inclusion.
      */
-    con_.set_ext_read_handler([this](const std::string &content) {
+    con_.set_ext_read_handler([this](const std::experimental::string_view &content) {
         this->read_handler(content);
     });
 }
@@ -89,7 +89,7 @@ void client::stop()
     con_.stop();
 }
 
-void client::read_handler(const std::string &content)
+void client::read_handler(const std::experimental::string_view &content)
 {
     /*
      * Iterate through all read handlers which may
@@ -100,17 +100,17 @@ void client::read_handler(const std::string &content)
     }
 }
 
-void client::add_read_handler(std::function<void(const std::string &)> func)
+void client::add_read_handler(std::function<void(const std::experimental::string_view &)> func)
 {
     read_handlers_.push_back(func);
 }
 
-void client::raw_cmd(const std::string &content)
+void client::raw_cmd(const std::experimental::string_view &content)
 {
     if (content.empty())
         throw std::invalid_argument("content is empty.");
 
-    con_.write(content);
+    con_.write(content.data());
 }
 
 /* ns irc */

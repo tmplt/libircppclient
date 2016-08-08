@@ -1,21 +1,22 @@
 #include <string>
 #include <vector>
+#include <experimental/string_view>
 
 namespace gen {
 
-bool is_integer(const std::string &s);
+bool is_integer(const std::experimental::string_view &s);
 
 /*
  * Validates the syntax of hostnames, ipv4-, and ipv6-addresses.
  * Returns an empty string on success, non-empty on failure.
  */
-std::string valid_addr(const std::string &addr);
+const std::string valid_addr(const std::experimental::string_view &addr);
+bool valid_ipv46_addr(const std::experimental::string_view &addr);
 
 /* Split a string into multiple strings when a character is met.
  * Returns all tokens in an array.
  */
-using tokens_t = std::vector<std::string>;
-tokens_t split_string(const std::string &str, const std::string &ch);
+std::vector<std::string> split_string(const std::experimental::string_view &str, const char c);
 
 /* ns gen */
 }

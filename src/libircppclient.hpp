@@ -121,7 +121,7 @@ public:
      * Send the given content directly to the server
      * as a command.
      */
-    void raw_cmd(const std::string &content);
+    void raw_cmd(const std::experimental::string_view &content);
 
 private:
     config conf_;
@@ -130,7 +130,7 @@ private:
      * Filled with lambdas at run-time which will decide how
      * to handle certain messages from the server.
      */
-    void read_handler(const std::string &content);
+    void read_handler(const std::experimental::string_view &content);
     std::vector<read_handler_t> read_handlers_;
 
     connection con_;

@@ -77,14 +77,15 @@ void connection::read_handler(const error_code &ec, std::size_t length)
 {
     using namespace boost;
     using std::string;
+    using std::experimental::string_view;
 
     if (ec) {
         /* Unable to read from server. */
         throw ec;
     } else {
-        const string content(string(read_buffer_.data(), length));
+        const string_view content(read_buffer_.data(), length);
 
-        std::stringstream iss(content);
+        std::stringstream iss(content.data());
         string command;
         iss >> command;
 

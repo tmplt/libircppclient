@@ -3,6 +3,7 @@
 #include <boost/asio/ssl.hpp>
 #include <functional>
 #include <string>
+#include <experimental/string_view>
 
 using boost::asio::ip::tcp;
 
@@ -11,7 +12,7 @@ namespace irc {
 using ping_func = std::function<void (void)>;
 
 /* A type which takes a lambda as argument.. */
-using read_handler_t = std::function<void (const std::string &content)>;
+using read_handler_t = std::function<void (const std::experimental::string_view &content)>;
 
 using boost::asio::ip::tcp;
 using boost::system::error_code;
@@ -72,7 +73,7 @@ private:
      * Everything else is passed onto the external read handler,
      * which resides in libircppclient.cpp.
      */
-    void read_handler(const boost::system::error_code &error, std::size_t length);
+    void read_handler(const error_code &error, std::size_t length);
 
     /*
      * So that we do not get kicked from the server, and so that the

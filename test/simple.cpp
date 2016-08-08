@@ -10,6 +10,9 @@
 using std::cout;    using std::endl;
 using std::cerr;
 
+#include <experimental/string_view>
+using std::experimental::string_view;
+
 void print_usage()
 {
     cout << "Usage: simple <host> [[+]<port>]" << endl
@@ -51,7 +54,7 @@ int main(int argc, char *argv[])
     try {
         irc::client client(conf);
 
-        client.add_read_handler([](const std::string &m) {
+        client.add_read_handler([](const string_view &m) {
             cout << m;
         });
 

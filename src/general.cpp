@@ -5,10 +5,24 @@
 #include <boost/algorithm/string.hpp>
 #include "general.hpp"
 
-enum { addr_max_length = 255 };
-const char hyphen = '-';
+using std::string;
+using std::vector;
+using std::experimental::string_view;
 
-bool gen::is_integer(const std::string &s)
+enum {
+    /*
+     * As per RFC 1035:
+     * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
+     * '.' are counted, also.
+     */
+    addr_max_length = 255,
+
+    hyphen   = '-',
+    period   = '.',
+    ipv6_sep = ':'
+};
+
+bool gen::is_integer(const string_view &s)
 {
     for (char c: s) {
         if (!std::isdigit(c))
@@ -18,34 +32,41 @@ bool gen::is_integer(const std::string &s)
     return true;
 }
 
-gen::tokens_t gen::split_string(const std::string &str, const std::string &ch)
+vector<string> gen::split_string(const string_view &str, const char c)
 {
-    gen::tokens_t tokens;
-    boost::split(tokens, str, boost::is_any_of(ch));
+    vector<string> result;
 
-    return tokens;
+    for (string_view::const_iterator i = str.begin(); i <= str.end(); i++) {
+        string_view::const_iterator token_start = i;
+
+        while (*i != c && *i)
+            i++;
+
+        result.push_back(string(token_start, i));
+    }
+
+    return result;
+}
+
+bool gen::valid_ipv46_addr(const string_view &addr)
+{
+    /* Unused, but required by inet_pton(). */
+    unsigned char buf[sizeof(struct in6_addr)];
+
+    if (addr.find(period) != string::npos)
+        return inet_pton(AF_INET, addr.data(), buf);
+    else
+        return inet_pton(AF_INET6, addr.data(), buf);
 }
 
 /* TODO: Implement support for internationalized domain names. */
-std::string gen::valid_addr(const std::string &addr)
+const std::string gen::valid_addr(const string_view &addr)
 {
-    using std::string;
-    boost::system::error_code error;
+    if (!valid_ipv46_addr(addr)) {
 
-    /*
-     * Only checks if addr is in an ipv4/6 address.
-     * Addresses such as irc.domain.tld and localhost
-     * are invalid here, and thus sets error positive.
-     */
-    boost::asio::ip::address::from_string(addr, error);
+        if (addr.find(ipv6_sep) != string::npos)
+            return "invalid ipv6 address.";
 
-    if (error) {
-
-        /*
-         * As per RFC 1035:
-         * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
-         * '.' are counted, also.
-         */
         if (addr.length() > addr_max_length)
             return "the address is too long; it's illegal to exceed 255 characters.";
 
@@ -53,9 +74,9 @@ std::string gen::valid_addr(const std::string &addr)
          * Split the hostname into its multiple sub-domains
          * (seperated by periods) and check them.
          */
-        tokens_t tokens = split_string(addr, ".");
+        vector<string> tokens = split_string(addr.data(), period);
 
-        for (auto &s: tokens) {
+        for (const string &s: tokens) {
 
             /*
              * In case of "irc..hostname.tld", where the token between '..',
@@ -66,8 +87,8 @@ std::string gen::valid_addr(const std::string &addr)
 
             /* Also as per RFC 1035. */
             if (s.front() == hyphen || s.back() ==  hyphen) {
-                return "first or last character in the element \"" + s + '\"'
-                     + " is a hyphen; that's not allowed.";
+                return "first or last character in the element \""
+                       + s + "\" is a hyphen; that's not allowed.";
             }
 
             /*
@@ -86,8 +107,8 @@ std::string gen::valid_addr(const std::string &addr)
                            !std::isalpha(c) &&
                            c != hyphen;     }) != s.end()) {
 
-                return "the element \"" + s + '\"'
-                     + " contains an illegal character (not a [A-Za-z0-9\\-]).";
+                return "the element \"" + s
+                       + "\" contains an illegal character (not a [A-Za-z0-9\\-]).";
             }
         }
     }
