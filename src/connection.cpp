@@ -16,11 +16,10 @@ connection::connection(const bool use_ssl)
       use_ssl_(use_ssl), ctx_(ssl::context::sslv23), ssl_socket_(io_service_, ctx_)
 {
     if (use_ssl_) {
-        boost::system::error_code ec;
-        ctx_.set_default_verify_paths(ec);
+        ctx_.set_default_verify_paths(ec_);
 
-        if (ec)
-            throw ec;
+        if (ec_)
+            throw ec_;
     }
 }
 
@@ -54,23 +53,23 @@ void connection::connect()
     tcp::resolver::query query(addr_, port_);
 
     /* default error. */
-    error_code ec = boost::asio::error::host_not_found;
+    ec_ = boost::asio::error::host_not_found;
 
     if (use_ssl_) {
-        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), ec);
+        boost::asio::connect(ssl_socket_.lowest_layer(), r.resolve(query), ec_);
 
-        if (!ec) {
-            ec = verify_cert();
+        if (!ec_) {
+            ec_ = verify_cert();
 
-            if (!ec)
-                ec = shake_hands();
+            if (!ec_)
+                ec_ = shake_hands();
         }
     } else {
-        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), ec);
+        boost::asio::connect(socket_.lowest_layer(), r.resolve(query), ec_);
     }
 
-    if (ec)
-        throw ec;
+    if (ec_)
+        throw ec_;
 }
 
 void connection::read_handler(const error_code &ec, std::size_t length)
@@ -170,16 +169,15 @@ void connection::write(std::string content)
      */
     content.append("\r\n");
 
-    error_code ec;
     cout << "[debug] writing: " << content;
 
     if (use_ssl_)
-        write(ssl_socket_, buffer(content), ec);
+        write(ssl_socket_, buffer(content), ec_);
     else
-        write(socket_.next_layer(), buffer(content), ec);
+        write(socket_.next_layer(), buffer(content), ec_);
 
-    if (ec)
-        throw ec;
+    if (ec_)
+        throw ec_;
 }
 
 void connection::stop()

@@ -129,6 +129,7 @@ private:
     nossl_socket socket_;
     ssl::context ctx_;
     ssl_socket   ssl_socket_;
+    error_code   ec_;
 };
 
 /* ns irc */
