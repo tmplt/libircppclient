@@ -15,7 +15,7 @@ execute_process(
 set(VERSION_STRING "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.\
 ${PROJECT_VERSION_PATCH}")
 
-add_definitions(-std=c++14)
+add_definitions(-std=c++1y)
 
 # Linux Clang + AppleClang
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
