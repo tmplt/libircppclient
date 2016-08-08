@@ -15,12 +15,10 @@ using ping_func = std::function<void (void)>;
 using read_handler_t = std::function<void (const std::experimental::string_view &content)>;
 
 using boost::asio::ip::tcp;
-using boost::system::error_code;
-using boost::asio::buffered_stream;
 namespace ssl = boost::asio::ssl;
 
 using ssl_socket = ssl::stream<tcp::socket>;
-using nossl_socket = buffered_stream<tcp::socket>;
+using nossl_socket = boost::asio::buffered_stream<tcp::socket>;
 
 class connection {
 public:
@@ -44,14 +42,14 @@ public:
         ext_read_handler_ = handler;
     }
 
-    void set_addr(const std::string &addr)
+    void set_addr(const std::experimental::string_view &addr)
     {
-        addr_ = addr;
+        addr_ = addr.data();
     }
 
-    void set_port(const std::string &port)
+    void set_port(const std::experimental::string_view &port)
     {
-        port_ = port;
+        port_ = port.data();
     }
 
     void stop_ping()
@@ -73,7 +71,7 @@ private:
      * Everything else is passed onto the external read handler,
      * which resides in libircppclient.cpp.
      */
-    void read_handler(const error_code &error, std::size_t length);
+    void read_handler(const boost::system::error_code &error, std::size_t length);
 
     /*
      * So that we do not get kicked from the server, and so that the
@@ -88,8 +86,8 @@ private:
     void pong();
 
     /* For SSL connections. */
-    error_code verify_cert();
-    error_code shake_hands();
+    boost::system::error_code verify_cert();
+    boost::system::error_code shake_hands();
 
     /* Server information. */
     std::string addr_ = "";
@@ -123,13 +121,13 @@ private:
      * ssl_socket_ requires both io_service_ and ctx_ to construct,
      * and for some apparent reason the order of these matter.
      */
-    boost::asio::io_service io_service_;
+    boost::asio::io_service   io_service_;
+    boost::system::error_code ec_;
 
     bool         use_ssl_;
     nossl_socket socket_;
     ssl::context ctx_;
     ssl_socket   ssl_socket_;
-    error_code   ec_;
 };
 
 /* ns irc */

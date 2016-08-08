@@ -5,10 +5,6 @@
 #include <boost/algorithm/string.hpp>
 #include "general.hpp"
 
-using std::string;
-using std::vector;
-using std::experimental::string_view;
-
 enum {
     /*
      * As per RFC 1035:
@@ -22,7 +18,7 @@ enum {
     ipv6_sep = ':'
 };
 
-bool gen::is_integer(const string_view &s)
+bool gen::is_integer(const std::experimental::string_view &s)
 {
     for (char c: s) {
         if (!std::isdigit(c))
@@ -32,9 +28,11 @@ bool gen::is_integer(const string_view &s)
     return true;
 }
 
-vector<string> gen::split_string(const string_view &str, const char c)
+std::vector<std::string> gen::split_string(const std::experimental::string_view &str,
+                                           const char c)
 {
-    vector<string> result;
+    using std::experimental::string_view;
+    std::vector<std::string> result;
 
     for (string_view::const_iterator i = str.begin(); i <= str.end(); i++) {
         string_view::const_iterator token_start = i;
@@ -42,29 +40,29 @@ vector<string> gen::split_string(const string_view &str, const char c)
         while (*i != c && *i)
             i++;
 
-        result.push_back(string(token_start, i));
+        result.push_back(std::string(token_start, i));
     }
 
     return result;
 }
 
-bool gen::valid_ipv46_addr(const string_view &addr)
+bool gen::valid_ipv46_addr(const std::experimental::string_view &addr)
 {
     /* Unused, but required by inet_pton(). */
     unsigned char buf[sizeof(struct in6_addr)];
 
-    if (addr.find(period) != string::npos)
+    if (addr.find(period) != std::experimental::string_view::npos)
         return inet_pton(AF_INET, addr.data(), buf);
     else
         return inet_pton(AF_INET6, addr.data(), buf);
 }
 
 /* TODO: Implement support for internationalized domain names. */
-const std::string gen::valid_addr(const string_view &addr)
+const std::string gen::valid_addr(const std::experimental::string_view &addr)
 {
     if (!valid_ipv46_addr(addr)) {
 
-        if (addr.find(ipv6_sep) != string::npos)
+        if (addr.find(ipv6_sep) != std::experimental::string_view::npos)
             return "invalid ipv6 address.";
 
         if (addr.length() > addr_max_length)
@@ -74,9 +72,9 @@ const std::string gen::valid_addr(const string_view &addr)
          * Split the hostname into its multiple sub-domains
          * (seperated by periods) and check them.
          */
-        vector<string> tokens = split_string(addr.data(), period);
+        std::vector<std::string> tokens = split_string(addr.data(), period);
 
-        for (const string &s: tokens) {
+        for (const std::string &s: tokens) {
 
             /*
              * In case of "irc..hostname.tld", where the token between '..',

@@ -3,10 +3,7 @@
 #include <boost/bind.hpp>
 #include "connection.hpp"
 #include "general.hpp"
-
 #include <iostream>
-using std::cout;
-using std::endl;
 
 namespace irc {
 
@@ -23,18 +20,18 @@ connection::connection(const bool use_ssl)
     }
 }
 
-error_code connection::verify_cert()
+boost::system::error_code connection::verify_cert()
 {
-    error_code ec;
+    boost::system::error_code ec;
     ssl_socket_.set_verify_mode(ssl::verify_peer | ssl::verify_fail_if_no_peer_cert);
     ssl_socket_.set_verify_callback(ssl::rfc2818_verification(addr_), ec);
 
     return ec;
 }
 
-error_code connection::shake_hands()
+boost::system::error_code connection::shake_hands()
 {
-    error_code ec;
+    boost::system::error_code ec;
     ssl_socket_.handshake(ssl_socket::client, ec);
 
     return ec;
@@ -72,7 +69,7 @@ void connection::connect()
         throw ec_;
 }
 
-void connection::read_handler(const error_code &ec, std::size_t length)
+void connection::read_handler(const boost::system::error_code &ec, std::size_t length)
 {
     using namespace boost;
     using std::string;
@@ -104,18 +101,15 @@ void connection::read_handler(const error_code &ec, std::size_t length)
 template<class S>
 void connection::read_some(S &s)
 {
-    using namespace boost::asio;
 
-    s.async_read_some(buffer(read_buffer_),
+    s.async_read_some(boost::asio::buffer(read_buffer_),
         boost::bind(&connection::read_handler,
-            this, placeholders::error,
-            placeholders::bytes_transferred()));
+            this, boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred()));
 }
 
 void connection::run()
 {
-    using namespace boost::asio;
-
     std::thread ping_thread(ping_handler_);
 
     if (use_ssl_)
@@ -123,7 +117,7 @@ void connection::run()
     else
         read_some(socket_);
 
-    error_code ec;
+    boost::system::error_code ec;
     io_service_.run(ec);
 
     /*
@@ -160,21 +154,18 @@ void connection::pong()
 
 void connection::write(std::string content)
 {
-    using boost::asio::write;
-    using boost::asio::buffer;
-
     /*
      * The IRC protocol specifies that all messages sent to the server
      * must be terminated with CR-LF (Carriage Return - Line Feed)
      */
     content.append("\r\n");
 
-    cout << "[debug] writing: " << content;
+    std::cout << "[debug] writing: " << content;
 
     if (use_ssl_)
-        write(ssl_socket_, buffer(content), ec_);
+        boost::asio::write(ssl_socket_, boost::asio::buffer(content), ec_);
     else
-        write(socket_.next_layer(), buffer(content), ec_);
+        boost::asio::write(socket_.next_layer(), boost::asio::buffer(content), ec_);
 
     if (ec_)
         throw ec_;

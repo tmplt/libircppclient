@@ -39,13 +39,12 @@ client::client(const config &conf)
 
 std::string client::validate_conf(const config &c)
 {
-    using std::string;
 
     /* Address checking. */
     if (c.address.empty()) {
         return "the address is empty.";
     } else {
-        string ret = gen::valid_addr(c.address);
+        std::string ret = gen::valid_addr(c.address);
 
         if (!ret.empty())
             return "invalid address, reason: " + ret;
