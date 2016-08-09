@@ -1,9 +1,8 @@
-#include <algorithm>
+#include "general.hpp"
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string.hpp>
-#include "general.hpp"
 
 enum {
     /*
