@@ -10,8 +10,6 @@ using boost::asio::ip::tcp;
 namespace irc {
 
 using ping_func = std::function<void (void)>;
-
-/* A type which takes a lambda as argument.. */
 using read_handler_t = std::function<void (const std::experimental::string_view &content)>;
 
 using boost::asio::ip::tcp;
@@ -29,7 +27,7 @@ public:
     void run();
     void stop();
 
-    /* CR-LF is appended */
+    /* CR-LF is appended. */
     void write(std::string content);
 
     /*

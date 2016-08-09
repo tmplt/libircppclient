@@ -5,15 +5,6 @@
 #include <thread>
 #include <stdexcept>
 
-/*
- * FIFO:
- * https://stackoverflow.com/questions/1262808/which-stl-container-should-i-use-for-a-fifo
- *
- * std::queue for the interface. Unsure about the container, but chunk allocating would
- * seem to be better, which will expand only if the server/client sends messages faster than
- * the lib can process them. This is already standard for std::queue, though.
- */
-
 namespace irc {
 
 client::client(const config &conf)
@@ -90,10 +81,6 @@ void client::stop()
 
 void client::read_handler(const std::experimental::string_view &content)
 {
-    /*
-     * Iterate through all read handlers which may
-     * send a reply back to the server.
-     */
     for (read_handler_t &func: read_handlers_) {
         func(content);
     }

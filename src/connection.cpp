@@ -9,7 +9,6 @@ namespace irc {
 
 connection::connection(const bool use_ssl)
     : socket_(io_service_),
-      /* SSL */
       use_ssl_(use_ssl), ctx_(ssl::context::sslv23), ssl_socket_(io_service_, ctx_)
 {
     if (use_ssl_) {
@@ -41,11 +40,6 @@ void connection::connect()
 {
     using boost::asio::ip::tcp;
 
-    /*
-     * Resolve the host and generate a list of endpoints.
-     * An endpoint is the information used to connect to an address.
-     * An address may have more than one endpoint.
-     */
     tcp::resolver r(io_service_);
     tcp::resolver::query query(addr_, port_);
 
