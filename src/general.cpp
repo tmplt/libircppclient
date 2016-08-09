@@ -33,13 +33,13 @@ std::vector<std::string> gen::split_string(const std::experimental::string_view 
     using std::experimental::string_view;
     std::vector<std::string> result;
 
-    for (string_view::const_iterator i = str.begin(); i <= str.end(); i++) {
-        string_view::const_iterator token_start = i;
+    for (string_view::const_iterator len = str.begin(); len <= str.end(); len++) {
+        string_view::const_iterator token_start = len;
 
-        while (*i != c && *i)
-            i++;
+        while (*len != c && *len)
+            len++;
 
-        result.push_back(std::string(token_start, i));
+        result.push_back(std::string(token_start, len));
     }
 
     return result;
