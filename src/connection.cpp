@@ -63,6 +63,16 @@ void connection::connect()
         throw ec_;
 }
 
+template<class S>
+void connection::read_some(S &s)
+{
+
+    s.async_read_some(boost::asio::buffer(read_buffer_),
+        boost::bind(&connection::read_handler,
+            this, boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred()));
+}
+
 void connection::read_handler(const boost::system::error_code &ec, std::size_t length)
 {
     using std::experimental::string_view;
@@ -87,17 +97,6 @@ void connection::read_handler(const boost::system::error_code &ec, std::size_t l
         else
             read_some(socket_);
     }
-}
-
-
-template<class S>
-void connection::read_some(S &s)
-{
-
-    s.async_read_some(boost::asio::buffer(read_buffer_),
-        boost::bind(&connection::read_handler,
-            this, boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred()));
 }
 
 void connection::run()
