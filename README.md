@@ -3,7 +3,6 @@
 features from C++17.
 It aims to be easy-to-use,
 memory efficient and whatever else a C++ library should be.
-The name comes from the C library under the similar name: *libircclient*.
 
 While Boost.Asio is a current dependency,
 it's planned for removal in *some* future version.
