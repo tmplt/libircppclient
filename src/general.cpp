@@ -27,6 +27,11 @@ bool gen::is_integer(const std::experimental::string_view &s)
     return true;
 }
 
+bool gen::string_contains(const std::experimental::string_view &str, const char c)
+{
+    return str.find(c) != std::experimental::string_view::npos;
+}
+
 std::vector<std::string> gen::split_string(const std::experimental::string_view &str,
                                            const char c)
 {
@@ -50,7 +55,7 @@ bool gen::valid_ipv46_addr(const std::experimental::string_view &addr)
     /* Unused, but required by inet_pton(). */
     unsigned char buf[sizeof(struct in6_addr)];
 
-    if (addr.find(period) != std::experimental::string_view::npos)
+    if (string_contains(addr, period))
         return inet_pton(AF_INET, addr.data(), buf);
     else
         return inet_pton(AF_INET6, addr.data(), buf);
@@ -61,7 +66,7 @@ const std::string gen::valid_addr(const std::experimental::string_view &addr)
 {
     if (!valid_ipv46_addr(addr)) {
 
-        if (addr.find(ipv6_sep) != std::experimental::string_view::npos)
+        if (string_contains(addr, ipv6_sep))
             return "invalid ipv6 address.";
 
         if (addr.length() > addr_max_length)

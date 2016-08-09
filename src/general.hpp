@@ -5,6 +5,7 @@
 namespace gen {
 
 bool is_integer(const std::experimental::string_view &s);
+bool string_contains(const std::experimental::string_view &str, const char c);
 
 /*
  * Validates the syntax of hostnames, ipv4-, and ipv6-addresses.
