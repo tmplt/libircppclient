@@ -88,7 +88,7 @@ void client::read_handler(const std::experimental::string_view &content)
 
 void client::add_read_handler(std::function<void(const std::experimental::string_view &)> func)
 {
-    read_handlers_.push_back(func);
+    read_handlers_.emplace_back(func);
 }
 
 void client::raw_cmd(const std::experimental::string_view &content)
