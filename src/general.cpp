@@ -44,7 +44,7 @@ std::vector<std::string> gen::split_string(const std::experimental::string_view 
         while (*len != c && *len)
             len++;
 
-        result.emplace_back(std::string(token_start, len));
+        result.emplace_back(token_start, len);
     }
 
     return result;
