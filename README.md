@@ -1,5 +1,5 @@
 ## About
-*libircppclient* is an IRC client library based on Boost.Asio and experimental
+libircppclient is an IRC client library based on Boost.Asio and experimental
 features from C++17.
 It aims to be easy-to-use,
 memory efficient and whatever else a C++ library should be.
@@ -70,6 +70,11 @@ Feel free to deviate from the standard if it improves code quality.
 - CMake 3.0
 - Boost.Asio (tested with >= 1.59.0)
 - A compiler with C++17 support
+
+## License
+libircppclient is distributed under the MIT license.
+
+You can find the license in the root of this repository in the file `LICENSE.md`
 
 ## Thanks to:
 - [muriloadriano](https://github.com/muriloadriano>) for the creation of [cleverbot](https://github.com/muriloadriano/cleverbot)
