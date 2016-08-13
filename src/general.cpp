@@ -76,7 +76,7 @@ const std::string gen::valid_addr(const std::experimental::string_view &addr)
          * Split the hostname into its multiple sub-domains
          * (seperated by periods) and check them.
          */
-        std::vector<std::string> tokens = split_string(addr.data(), period);
+        std::vector<std::string> tokens = split_string(addr, period);
 
         for (const std::string &s: tokens) {
 
