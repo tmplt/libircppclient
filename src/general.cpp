@@ -78,7 +78,7 @@ const std::string gen::valid_addr(const std::experimental::string_view &addr)
          */
         std::vector<std::string> tokens = split_string(addr, period);
 
-        for (const std::string &s: tokens) {
+        for (const std::experimental::string_view &s: tokens) {
 
             /*
              * In case of "irc..hostname.tld", where the token between '..',
@@ -89,8 +89,9 @@ const std::string gen::valid_addr(const std::experimental::string_view &addr)
 
             /* Also as per RFC 1035. */
             if (s.front() == hyphen || s.back() ==  hyphen) {
+                std::string element = s.data();
                 return "first or last character in the element \""
-                       + s + "\" is a hyphen; that's not allowed.";
+                       + element + "\" is a hyphen; that's not allowed.";
             }
 
             /*
@@ -109,7 +110,8 @@ const std::string gen::valid_addr(const std::experimental::string_view &addr)
                            !std::isalpha(c) &&
                            c != hyphen;     }) != s.end()) {
 
-                return "the element \"" + s
+                std::string element = s.data();
+                return "the element \"" + element
                        + "\" contains an illegal character (not a [A-Za-z0-9\\-]).";
             }
         }
