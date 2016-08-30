@@ -1,5 +1,5 @@
 #include "libircppclient.hpp"
-#include "general.hpp"
+#include "util.hpp"
 #include <string>
 #include <iostream>
 #include <thread>
@@ -35,7 +35,7 @@ std::string client::validate_conf(const config &c)
     if (c.address.empty()) {
         return "the address is empty.";
     } else {
-        std::string ret = gen::valid_addr(c.address);
+        std::string ret = util::valid_addr(c.address);
 
         if (!ret.empty())
             return "invalid address, reason: " + ret;
@@ -45,7 +45,7 @@ std::string client::validate_conf(const config &c)
     if (c.port.empty())
         return "port is empty.";
 
-    else if (!gen::is_integer(c.port))
+    else if (!util::is_integer(c.port))
         return "port contains one of more non-integers.";
 
     return "";

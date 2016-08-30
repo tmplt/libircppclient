@@ -1,4 +1,4 @@
-#include "general.hpp"
+#include "util.hpp"
 #include <boost/system/error_code.hpp>
 #include <boost/asio/ip/address.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -17,7 +17,7 @@ enum {
     ipv6_sep = ':'
 };
 
-bool gen::is_integer(const std::experimental::string_view &s)
+bool util::is_integer(const std::experimental::string_view &s)
 {
     for (char c: s) {
         if (!std::isdigit(c))
@@ -27,12 +27,12 @@ bool gen::is_integer(const std::experimental::string_view &s)
     return true;
 }
 
-bool gen::string_contains(const std::experimental::string_view &str, const char c)
+bool util::string_contains(const std::experimental::string_view &str, const char c)
 {
     return str.find(c) != std::experimental::string_view::npos;
 }
 
-std::vector<std::string> gen::split_string(const std::experimental::string_view &str,
+std::vector<std::string> util::split_string(const std::experimental::string_view &str,
                                            const char c)
 {
     using std::experimental::string_view;
@@ -50,7 +50,7 @@ std::vector<std::string> gen::split_string(const std::experimental::string_view 
     return result;
 }
 
-bool gen::valid_ipv46_addr(const std::experimental::string_view &addr)
+bool util::valid_ipv46_addr(const std::experimental::string_view &addr)
 {
     /* Unused, but required by inet_pton(). */
     unsigned char buf[sizeof(struct in6_addr)];
@@ -62,7 +62,7 @@ bool gen::valid_ipv46_addr(const std::experimental::string_view &addr)
 }
 
 /* TODO: Implement support for internationalized domain names. */
-const std::string gen::valid_addr(const std::experimental::string_view &addr)
+const std::string util::valid_addr(const std::experimental::string_view &addr)
 {
     if (!valid_ipv46_addr(addr)) {
 

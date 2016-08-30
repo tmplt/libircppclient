@@ -1,5 +1,4 @@
 #include "connection.hpp"
-#include "general.hpp"
 #include <boost/bind.hpp>
 #include <thread>
 #include <string>
