@@ -33,7 +33,7 @@ bool util::string_contains(const std::experimental::string_view &str, const char
 }
 
 std::vector<std::string> util::split_string(const std::experimental::string_view &str,
-                                           const char c)
+                                            const char c)
 {
     using std::experimental::string_view;
     std::vector<std::string> result;
