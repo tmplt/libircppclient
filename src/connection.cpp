@@ -150,7 +150,9 @@ void connection::write(std::string content)
      */
     content.append("\r\n");
 
-    std::cout << "[debug] writing: " << content;
+    #ifdef DEBUG
+        std::cout << "[debug] writing: " << content;
+    #endif
 
     if (use_ssl_)
         boost::asio::write(ssl_socket_, boost::asio::buffer(content), ec_);

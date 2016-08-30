@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(libircppclient VERSION 0.5.0)
 
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1")
 
 # Get the latest abbreviated commit hash of the working branch
 execute_process(
