@@ -4,6 +4,7 @@
 #include <iostream>
 #include <thread>
 #include <stdexcept>
+#include <cassert>
 
 namespace irc {
 
@@ -30,7 +31,6 @@ client::client(const config &conf)
 
 std::string client::validate_conf(const config &c)
 {
-
 	/* Address checking. */
 	if (c.address.empty()) {
 		return "the address is empty.";
