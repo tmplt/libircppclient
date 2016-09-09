@@ -10,19 +10,19 @@ namespace irc {
  * Contains default values.
  */
 struct config {
-    std::string
-        address = "",
-        port    = "6667",
-        nick    = "Temeraire",
-        user    = "Laurence",
+	std::string
+		address = "",
+		port	= "6667",
+		nick	= "Temeraire",
+		user	= "Laurence",
 
-    /* Optional */
+	/* Optional */
 
-        /* For identification with NickServ */
-        nick_pw   = "",
-        server_pw = "";
+		/* For identification with NickServ */
+		nick_pw   = "",
+		server_pw = "";
 
-    bool ssl = false;
+	bool ssl = false;
 };
 
 }

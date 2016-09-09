@@ -60,8 +60,7 @@ client.start();
 ## Code Style
 Syntax-wise,
 generally follow [the Linux kernel coding style](https://www.kernel.org/doc/Documentation/CodingStyle) except when it comes to indention,
-which is four (4) spaces.
-Tabs are illegal.
+which is four (4) spaces in width (still tabs, however).
 
 Some parts of the LKCS might be harder to read/understand in C++.
 Feel free to deviate from the standard if it improves code quality.
