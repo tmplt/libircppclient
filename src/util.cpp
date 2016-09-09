@@ -1,10 +1,12 @@
+#include <cassert>
+#include <algorithm>
+#include <arpa/inet.h>
 #include "util.hpp"
-#include <boost/system/error_code.hpp>
-#include <boost/asio/ip/address.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string.hpp>
 
 enum {
+	ipv4,
+	ipv6,
+
 	/*
 	 * As per RFC 1035:
 	 * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
@@ -12,6 +14,10 @@ enum {
 	 */
 	addr_max_length = 255,
 
+	/*
+	 * Whether this is better than character literals, I'm unsure,
+	 * but I feel it looks better
+	 */
 	hyphen   = '-',
 	period   = '.',
 	ipv6_sep = ':'
@@ -19,6 +25,8 @@ enum {
 
 bool util::is_integer(const std::experimental::string_view &s)
 {
+	assert(!s.empty());
+
 	for (char c: s) {
 		if (!std::isdigit(c))
 			return false;
@@ -29,12 +37,36 @@ bool util::is_integer(const std::experimental::string_view &s)
 
 bool util::string_contains(const std::experimental::string_view &str, const char c)
 {
+	assert(!str.empty());
+	assert(c);
+
 	return str.find(c) != std::experimental::string_view::npos;
 }
 
-std::vector<std::string> util::split_string(const std::experimental::string_view &str,
-											const char c)
+int util::ip_version(const std::experimental::string_view &addr)
 {
+	assert(!addr.empty());
+
+	/*
+	 * Feels hackish.
+	 *
+	 * TODO: Look into and confirm/bust above statement.
+	 */
+	if (string_contains(addr, period))
+		return ipv4;
+
+	return ipv6;
+}
+
+/*
+ * Split a string into multiple strings when a character is met.
+ * Returns all tokens in an array.
+ */
+std::vector<std::string> util::split_string(const std::experimental::string_view &str, const char c)
+{
+	assert(!str.empty());
+	assert(c);
+
 	using std::experimental::string_view;
 	std::vector<std::string> result;
 
@@ -50,20 +82,33 @@ std::vector<std::string> util::split_string(const std::experimental::string_view
 	return result;
 }
 
+/*
+ * Validates an ipv4ipv6 address and return the result.
+ * Thanks, beej!
+ */
 bool util::valid_ipv46_addr(const std::experimental::string_view &addr)
 {
+	assert(!addr.empty());
+
 	/* Unused, but required by inet_pton(). */
 	unsigned char buf[sizeof(struct in6_addr)];
 
-	if (string_contains(addr, period))
+	if (ip_version(addr) == ipv4)
 		return inet_pton(AF_INET, addr.data(), buf);
 	else
 		return inet_pton(AF_INET6, addr.data(), buf);
 }
 
-/* TODO: Implement support for internationalized domain names. */
+/*
+ * Validates the syntax of hostnames, ipv4-, and ipv6-addresses.
+ * Returns an empty string on success, non-empty on failure.
+ *
+ * TODO: Implement support for internationalized domain names.
+ */
 const std::string util::valid_addr(const std::experimental::string_view &addr)
 {
+	assert(!addr.empty());
+
 	if (!valid_ipv46_addr(addr)) {
 
 		if (string_contains(addr, ipv6_sep))
