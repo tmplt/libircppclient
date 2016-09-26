@@ -135,8 +135,8 @@ const std::string util::valid_addr(const std::experimental::string_view &addr)
             /* Also as per RFC 1035. */
             if (s.front() == hyphen || s.back() ==  hyphen) {
                 std::string element = s.data();
-                return "first or last character in the element \""
-                       + element + "\" is a hyphen; that's not allowed.";
+                return "first or last character in the element \"" +
+                       element + "\" is a hyphen; that's not allowed.";
             }
 
             /*
@@ -156,8 +156,8 @@ const std::string util::valid_addr(const std::experimental::string_view &addr)
                            c != hyphen;     }) != s.end()) {
 
                 std::string element = s.data();
-                return "the element \"" + element
-                       + "\" contains an illegal character (not a [A-Za-z0-9\\-]).";
+                return "the element \"" + element +
+                       "\" contains an illegal character (not a [A-Za-z0-9\\-]).";
             }
         }
     }
