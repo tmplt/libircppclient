@@ -107,8 +107,6 @@ bool util::valid_ipv46_addr(const std::experimental::string_view &addr)
  */
 const std::string util::valid_addr(const std::experimental::string_view &addr)
 {
-    assert(!addr.empty());
-
     if (!valid_ipv46_addr(addr)) {
 
         if (string_contains(addr, ipv6_sep))
