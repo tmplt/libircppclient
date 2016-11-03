@@ -4,20 +4,20 @@
 #include "util.hpp"
 
 enum {
-    ipv4,
-    ipv6,
-
     /*
      * As per RFC 1035:
      * https://blogs.msdn.microsoft.com/oldnewthing/20120412-00/?p=7873/
      * '.' are counted, also.
      */
     addr_max_length = 255,
+};
 
-    /*
-     * Whether this is better than character literals, I'm unsure,
-     * but I feel it looks better
-     */
+enum {
+    ipv4,
+    ipv6
+};
+
+enum {
     hyphen   = '-',
     period   = '.',
     ipv6_sep = ':'
