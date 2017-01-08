@@ -7,7 +7,8 @@ memory efficient and whatever else a C++ library should be.
 While Boost.Asio is a current dependency,
 it's planned for removal in *some* future version.
 Either we'll get `std::asio` from C++20,
-or I'll just have to learn sockets.
+or I'll just have to learn sockets
+(or I could use something like [ØMQ](http://zeromq.org/)).
 
 ## Usage
 
