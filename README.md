@@ -5,7 +5,8 @@ features from C++17.
 While Boost.Asio is a current dependency,
 it's planned for removal in *some* future version.
 Either we'll get `std::asio` from C++20,
-or I'll just have to learn sockets.
+or I'll just have to learn sockets
+(or I could use something like [ØMQ](http://zeromq.org/)).
 
 libircppclient is a work in progress currently on hold.
 But I might need it in [bookwyrm](https://github.com/tmplt/bookwyrm).
