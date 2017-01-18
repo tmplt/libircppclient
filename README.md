@@ -53,8 +53,7 @@ client.start();
 ```
 
 ## Design Goals and Plans
-- Simple, logical, and easy to use.
-- Full compliance with [RFC2812](https://tools.ietf.org/html/rfc2812) and by extension [IRCv3](http://ircv3.net/).
+- Compliance with [RFC2812](https://tools.ietf.org/html/rfc2812) and by extension [IRCv3](http://ircv3.net/).
 - Unicode support.
 - Colour support.
 
