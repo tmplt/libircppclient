@@ -1,13 +1,14 @@
 ## About
 libircppclient is an IRC client library based on Boost.Asio and experimental
 features from C++17.
-It aims to be easy-to-use,
-memory efficient and whatever else a C++ library should be.
 
 While Boost.Asio is a current dependency,
 it's planned for removal in *some* future version.
 Either we'll get `std::asio` from C++20,
 or I'll just have to learn sockets.
+
+libircppclient is a work in progress currently on hold.
+But I might need it in [bookwyrm](https://github.com/tmplt/bookwyrm).
 
 ## Usage
 
